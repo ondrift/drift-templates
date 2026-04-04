@@ -1,0 +1,22 @@
+name: la-cucina
+atomic:
+  - dir: ./atomic/get-menu
+  - dir: ./atomic/submit-reservation
+  - dir: ./atomic/confirm-reservation
+backbone:
+  cache:
+    - key: menu
+      file: ./backbone/menu.json
+  nosql:
+    - collection: reservations
+  queues:
+    - name: reservation-queue
+  secrets:
+    - key: RESTAURANT_NAME
+      value: "La Cucina"
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+canvas:
+  - dir: ./canvas

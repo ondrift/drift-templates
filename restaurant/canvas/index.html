@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Cucina — Seasonal Italian Cuisine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark:    #0f0c09;
+      --dark-2:  #1c1610;
+      --cream:   #f8f3ec;
+      --cream-2: #ede4d8;
+      --gold:    #c9a455;
+      --rust:    #9e3020;
+      --rust-h:  #b83a26;
+      --muted:   #8a7a6a;
+      --border:  #dfd3c3;
+      --white:   #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--dark); overflow-x: hidden; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+      padding: 1.75rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: padding 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+    }
+    nav.scrolled {
+      background: rgba(15,12,9,0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 1rem 3rem;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.35);
+    }
+    .nav-logo { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.5rem; color: var(--white); letter-spacing: 0.02em; }
+    .nav-links a {
+      color: rgba(255,255,255,0.75); text-decoration: none;
+      margin-left: 2rem; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    @media (max-width: 640px) { nav { padding: 1.2rem 1.5rem; } nav.scrolled { padding: 0.9rem 1.5rem; } .nav-links { display: none; } }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      background:
+        linear-gradient(to bottom, rgba(10,7,4,0.4) 0%, rgba(10,7,4,0.72) 100%),
+        url('https://picsum.photos/seed/lacucinaroma/1920/1080') center/cover no-repeat;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; color: var(--white); padding: 2rem; position: relative;
+    }
+    .eyebrow { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 1.1rem; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 8vw, 7rem); font-style: italic; font-weight: 400;
+      line-height: 1.05; margin-bottom: 1.3rem;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.45);
+    }
+    .hero > p { font-size: 1.05rem; font-weight: 300; color: rgba(255,255,255,0.78); max-width: 460px; line-height: 1.75; margin-bottom: 2.5rem; }
+    .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      background: var(--rust); color: #fff; text-decoration: none;
+      padding: 0.9rem 2.2rem; border-radius: 4px;
+      font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;
+      border: none; cursor: pointer; transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--rust-h); transform: translateY(-1px); }
+    .btn-primary:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+    .btn-ghost {
+      background: transparent; color: #fff; text-decoration: none;
+      padding: 0.9rem 2.2rem; border-radius: 4px;
+      font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700;
+      border: 1.5px solid rgba(255,255,255,0.35); transition: border-color 0.2s, color 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-1px); }
+    .scroll-hint {
+      position: absolute; bottom: 2.2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      color: rgba(255,255,255,0.4); font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+    }
+    .scroll-hint::after { content: ''; width: 1px; height: 36px; background: linear-gradient(to bottom, rgba(255,255,255,0.35), transparent); }
+
+    /* ─── STORY STRIP ─── */
+    .story-strip { background: var(--dark-2); display: flex; justify-content: center; }
+    .story-stat { flex: 1; max-width: 200px; padding: 2.5rem 1.5rem; text-align: center; border-right: 1px solid rgba(255,255,255,0.07); }
+    .story-stat:last-child { border-right: none; }
+    .story-stat .num { font-family: 'Playfair Display', serif; font-size: 2.6rem; font-style: italic; color: var(--gold); line-height: 1; margin-bottom: 0.35rem; }
+    .story-stat .lbl { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(248,243,236,0.45); font-weight: 700; }
+
+    /* ─── SECTION HEADER ─── */
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-header h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.9rem, 4vw, 2.8rem); font-style: italic; font-weight: 400; color: var(--dark); line-height: 1.2; margin: 0.6rem 0 0.8rem; }
+    .section-header p { color: var(--muted); font-size: 0.93rem; line-height: 1.65; max-width: 500px; margin: 0 auto; }
+
+    /* ─── MENU ─── */
+    .menu-section { background: var(--cream); padding: 5.5rem 2rem; }
+    .menu-inner { max-width: 1120px; margin: 0 auto; }
+
+    .cat-tabs { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .tab-btn {
+      background: none; border: 1.5px solid var(--border); border-radius: 100px;
+      padding: 0.45rem 1.25rem; cursor: pointer;
+      font-family: 'Lato', sans-serif; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700;
+      color: var(--muted); transition: all 0.2s;
+    }
+    .tab-btn:hover { border-color: var(--rust); color: var(--rust); }
+    .tab-btn.active { background: var(--rust); border-color: var(--rust); color: #fff; }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+
+    .menu-card {
+      background: var(--white); border-radius: 14px; overflow: hidden;
+      box-shadow: 0 2px 18px rgba(15,12,9,0.07);
+      transition: transform 0.35s cubic-bezier(.2,.8,.2,1), box-shadow 0.35s;
+      opacity: 0; transform: translateY(22px);
+    }
+    .menu-card.visible {
+      opacity: 1; transform: translateY(0);
+      transition: opacity 0.55s ease, transform 0.55s ease, box-shadow 0.35s cubic-bezier(.2,.8,.2,1);
+    }
+    .menu-card:hover { transform: translateY(-5px); box-shadow: 0 14px 44px rgba(15,12,9,0.14); }
+    .menu-card.hidden { display: none; }
+
+    .card-img { position: relative; height: 210px; overflow: hidden; }
+    .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(.2,.8,.2,1); display: block; }
+    .menu-card:hover .card-img img { transform: scale(1.06); }
+    .card-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; background: linear-gradient(135deg, var(--cream-2), var(--border)); }
+    .card-badge {
+      position: absolute; top: 0.85rem; left: 0.85rem;
+      background: var(--gold); color: var(--dark);
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.22rem 0.65rem; border-radius: 100px;
+    }
+
+    .card-body { padding: 1.3rem 1.45rem 1.5rem; }
+    .card-name { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 600; color: var(--dark); margin-bottom: 0.35rem; }
+    .card-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.55; margin-bottom: 1rem; }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; }
+    .card-price { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--rust); }
+
+    #menu-loading { text-align: center; color: var(--muted); font-style: normal; grid-column: 1 / -1; padding: 3rem 0; }
+
+    /* ─── RESERVATION ─── */
+    .res-section { display: grid; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 860px) { .res-section { grid-template-columns: 1fr; } }
+
+    .res-left {
+      padding: 5.5rem 3.5rem; display: flex; flex-direction: column; justify-content: center;
+      background:
+        linear-gradient(rgba(10,7,4,0.58), rgba(10,7,4,0.58)),
+        url('https://picsum.photos/seed/candlelitdining/800/1000') center/cover no-repeat;
+    }
+    .res-left .eyebrow { margin-bottom: 1.5rem; }
+    .res-left blockquote { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3vw, 2.1rem); font-style: italic; color: var(--white); line-height: 1.45; margin-bottom: 2.2rem; }
+    .res-left .res-info { color: rgba(248,243,236,0.55); font-size: 0.88rem; line-height: 1.9; }
+    .res-left .res-info strong { color: var(--cream); }
+
+    .res-right { padding: 5.5rem 3.5rem; background: var(--white); }
+    @media (max-width: 860px) { .res-left, .res-right { padding: 3.5rem 2rem; } }
+
+    .res-right h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-style: italic; color: var(--dark); margin-bottom: 2rem; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      border: 1.5px solid var(--border); border-radius: 6px; padding: 0.72rem 0.95rem;
+      font-size: 0.95rem; font-family: 'Lato', sans-serif; color: var(--dark); background: var(--cream);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--rust); box-shadow: 0 0 0 3px rgba(158,48,32,0.1); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    .submit-btn { width: 100%; margin-top: 0.75rem; }
+
+    .res-feedback {
+      margin-top: 1rem; padding: 0.9rem 1.1rem; border-radius: 6px; font-size: 0.88rem; display: none;
+    }
+    .res-feedback.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; display: block; }
+    .res-feedback.error   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; display: block; }
+
+    /* ─── GALLERY ─── */
+    .gallery-section { background: var(--cream-2); padding: 5.5rem 2rem; }
+    .gallery-grid {
+      max-width: 1120px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 240px 240px;
+      gap: 0.75rem;
+    }
+    @media (max-width: 700px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; } }
+    @media (max-width: 480px) { .gallery-grid { grid-template-columns: 1fr; } }
+
+    .gallery-item { overflow: hidden; border-radius: 10px; background: var(--border); }
+    .gallery-item:first-child { grid-row: 1 / 3; }
+    @media (max-width: 700px) { .gallery-item:first-child { grid-row: auto; } }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s cubic-bezier(.2,.8,.2,1); }
+    .gallery-item:hover img { transform: scale(1.06); }
+
+    /* ─── FIND US ─── */
+    .findus-section { background: var(--cream); padding: 5.5rem 2rem; }
+    .findus-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.6fr; gap: 4rem; align-items: start; }
+    @media (max-width: 700px) { .findus-inner { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+    .findus-left h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-style: italic; color: var(--dark); margin: 0.5rem 0 1.5rem; }
+    .info-row { display: flex; gap: 1rem; align-items: flex-start; padding: 1.15rem 0; border-bottom: 1px solid var(--border); }
+    .info-row:last-child { border-bottom: none; }
+    .info-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .info-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
+    .info-value { font-size: 0.93rem; color: var(--dark); line-height: 1.55; }
+    .findus-map iframe { width: 100%; height: 340px; border: 1px solid var(--border); border-radius: 10px; display: block; }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--dark); padding: 2.5rem; text-align: center; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.5rem; color: var(--gold); margin-bottom: 0.6rem; }
+    footer p { color: rgba(248,243,236,0.4); font-size: 0.82rem; }
+    footer a { color: rgba(248,243,236,0.4); text-decoration: none; }
+    footer a:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<nav id="main-nav">
+  <span class="nav-logo">La Cucina</span>
+  <div class="nav-links">
+    <a href="#menu-section">Menu</a>
+    <a href="#res-section">Reserve</a>
+    <a href="#gallery-section">Gallery</a>
+    <a href="#findus-section">Find us</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <p class="eyebrow">Seasonal Italian Cuisine</p>
+  <h1>A table worth<br>waiting for</h1>
+  <p>Handmade pasta, wood-fired dishes, and ingredients sourced within 50 miles. Open Tuesday through Sunday.</p>
+  <div class="hero-ctas">
+    <a href="#res-section" class="btn-primary">Reserve a table</a>
+    <a href="#menu-section" class="btn-ghost">View our menu</a>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</div>
+
+<!-- STORY STRIP -->
+<div class="story-strip">
+  <div class="story-stat"><div class="num">2008</div><div class="lbl">Established</div></div>
+  <div class="story-stat"><div class="num">60</div><div class="lbl">Covers</div></div>
+  <div class="story-stat"><div class="num">100%</div><div class="lbl">Seasonal menu</div></div>
+  <div class="story-stat"><div class="num">50mi</div><div class="lbl">Sourcing radius</div></div>
+</div>
+
+<!-- MENU -->
+<section class="menu-section" id="menu-section">
+  <div class="menu-inner">
+    <div class="section-header">
+      <p class="eyebrow">What we serve</p>
+      <h2>Our menu</h2>
+      <p>Dishes change with the season. Allergen information available on request.</p>
+    </div>
+    <div class="cat-tabs" id="cat-tabs">
+      <button class="tab-btn active" data-cat="all">All</button>
+    </div>
+    <div class="menu-grid" id="menu-container">
+      <p id="menu-loading">Loading menu…</p>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVATION -->
+<div class="res-section" id="res-section">
+  <div class="res-left">
+    <p class="eyebrow">Book your evening</p>
+    <blockquote>"Good food is the foundation of genuine happiness."</blockquote>
+    <div class="res-info">
+      <strong>Tuesday – Sunday</strong><br>
+      Lunch · 12:00 – 14:30<br>
+      Dinner · 18:00 – 22:00<br><br>
+      <strong>+39 06 1234 5678</strong><br>
+      info@lacucina.example
+    </div>
+  </div>
+  <div class="res-right">
+    <h2>Reserve a table</h2>
+    <form id="res-form" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="res-name">Full name</label>
+          <input type="text" id="res-name" placeholder="Jane Smith" required />
+        </div>
+        <div class="form-group">
+          <label for="res-email">Email</label>
+          <input type="email" id="res-email" placeholder="jane@example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="res-date">Date</label>
+          <input type="date" id="res-date" required />
+        </div>
+        <div class="form-group">
+          <label for="res-time">Time</label>
+          <select id="res-time" required>
+            <option value="">— select —</option>
+            <optgroup label="Lunch">
+              <option>12:00</option><option>12:30</option><option>13:00</option><option>13:30</option>
+            </optgroup>
+            <optgroup label="Dinner">
+              <option>18:00</option><option>18:30</option><option>19:00</option><option>19:30</option>
+              <option>20:00</option><option>20:30</option><option>21:00</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="res-party">Party size</label>
+          <select id="res-party" required>
+            <option value="">— guests —</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option><option>8</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="res-notes">Special requests</label>
+          <input type="text" id="res-notes" placeholder="Allergies, high chair, anniversary…" />
+        </div>
+      </div>
+      <button type="submit" class="btn-primary submit-btn" id="res-btn">Request reservation</button>
+    </form>
+    <div id="res-feedback" class="res-feedback"></div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<section class="gallery-section" id="gallery-section">
+  <div class="section-header">
+    <p class="eyebrow">The experience</p>
+    <h2>La Cucina in pictures</h2>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item"><img src="https://picsum.photos/seed/lacucina-tall/800/1000" alt="La Cucina" loading="lazy" /></div>
+    <div class="gallery-item"><img src="https://picsum.photos/seed/lacucina-2/800/500" alt="Our kitchen" loading="lazy" /></div>
+    <div class="gallery-item"><img src="https://picsum.photos/seed/lacucina-3/800/500" alt="Seasonal dishes" loading="lazy" /></div>
+    <div class="gallery-item"><img src="https://picsum.photos/seed/lacucina-4/800/500" alt="Wine selection" loading="lazy" /></div>
+    <div class="gallery-item"><img src="https://picsum.photos/seed/lacucina-5/800/500" alt="Private dining" loading="lazy" /></div>
+  </div>
+</section>
+
+<!-- FIND US -->
+<section class="findus-section" id="findus-section">
+  <div class="findus-inner">
+    <div class="findus-left">
+      <p class="eyebrow">Getting here</p>
+      <h2>Find us</h2>
+      <div class="info-row">
+        <div class="info-icon">📍</div>
+        <div><div class="info-label">Address</div><div class="info-value">Via Roma 12<br>00100 Roma, Italy</div></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">🕐</div>
+        <div><div class="info-label">Opening hours</div><div class="info-value">Tuesday – Sunday<br>12:00–14:30 · 18:00–22:00</div></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">📞</div>
+        <div><div class="info-label">Phone</div><div class="info-value">+39 06 1234 5678</div></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">✉️</div>
+        <div><div class="info-label">Email</div><div class="info-value">info@lacucina.example</div></div>
+      </div>
+    </div>
+    <div class="findus-map">
+      <iframe
+        src="https://maps.google.com/maps?q=Piazza+Navona,Roma&output=embed"
+        loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+        title="La Cucina location">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">La Cucina</div>
+  <p>© 2026 La Cucina · Via Roma 12, Roma · <a href="mailto:info@lacucina.example">info@lacucina.example</a></p>
+</footer>
+
+<script>
+// ─── NAV ────────────────────────────────────────────────────────────────────
+const nav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 60), { passive: true });
+
+// ─── MENU ───────────────────────────────────────────────────────────────────
+const EMOJI = { Starters: '🥗', Mains: '🍝', Desserts: '🍮', Drinks: '🍷' };
+
+function card(item) {
+  const emoji = EMOJI[item.category] ?? '🍽️';
+  const img = item.image_url
+    ? `<img src="${item.image_url}" alt="${item.name}" loading="lazy">`
+    : `<div class="card-img-placeholder">${emoji}</div>`;
+  return `
+    <div class="menu-card" data-cat="${item.category}">
+      <div class="card-img">${img}<span class="card-badge">${item.category}</span></div>
+      <div class="card-body">
+        <div class="card-name">${item.name}</div>
+        <div class="card-desc">${item.description}</div>
+        <div class="card-footer"><span class="card-price">€${Number(item.price).toFixed(2)}</span></div>
+      </div>
+    </div>`;
+}
+
+(async () => {
+  const grid = document.getElementById('menu-container');
+  const tabs = document.getElementById('cat-tabs');
+  try {
+    const data  = await fetch('/api/get-menu').then(r => r.json());
+    const items = data?.payload?.items ?? [];
+    if (!items.length) { document.getElementById('menu-loading').textContent = 'Menu unavailable — check back soon.'; return; }
+
+    // Category tabs
+    [...new Set(items.map(i => i.category))].forEach(cat => {
+      const b = document.createElement('button');
+      b.className = 'tab-btn'; b.dataset.cat = cat; b.textContent = cat;
+      tabs.appendChild(b);
+    });
+
+    // Cards
+    grid.innerHTML = items.map(card).join('');
+
+    // Scroll-in animation
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    grid.querySelectorAll('.menu-card').forEach((c, i) => {
+      c.style.transitionDelay = `${(i % 3) * 80}ms`;
+      obs.observe(c);
+    });
+
+    // Filter
+    tabs.addEventListener('click', e => {
+      const btn = e.target.closest('.tab-btn');
+      if (!btn) return;
+      tabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.cat;
+      grid.querySelectorAll('.menu-card').forEach(c => c.classList.toggle('hidden', cat !== 'all' && c.dataset.cat !== cat));
+    });
+  } catch {
+    document.getElementById('menu-loading').textContent = 'Could not load menu.';
+  }
+})();
+
+// ─── RESERVATION ────────────────────────────────────────────────────────────
+document.getElementById('res-date').min = new Date().toISOString().split('T')[0];
+
+const form = document.getElementById('res-form');
+const btn  = document.getElementById('res-btn');
+const fb   = document.getElementById('res-feedback');
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const name  = document.getElementById('res-name').value.trim();
+  const email = document.getElementById('res-email').value.trim();
+  const date  = document.getElementById('res-date').value;
+  const time  = document.getElementById('res-time').value;
+  const party = parseInt(document.getElementById('res-party').value, 10);
+  const notes = document.getElementById('res-notes').value.trim();
+
+  if (!name || !email || !date || !time || !party) {
+    fb.textContent = 'Please fill in all required fields.';
+    fb.className = 'res-feedback error';
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Sending…';
+  fb.className = 'res-feedback';
+
+  try {
+    const res  = await fetch('/api/submit-reservation', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, date, time, party_size: party, notes }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      fb.textContent = data.payload?.message ?? '✓ Reservation received — we\'ll confirm by email shortly.';
+      fb.className = 'res-feedback success';
+      form.reset();
+    } else {
+      fb.textContent = data.payload?.error ?? 'Something went wrong. Please call us directly.';
+      fb.className = 'res-feedback error';
+    }
+  } catch {
+    fb.textContent = 'Could not reach the server. Please call us directly.';
+    fb.className = 'res-feedback error';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Request reservation';
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apex Studio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #ffffff;
+      --surface: #f8fafc;
+      --border: #e2e8f0;
+      --dark: #0f172a;
+      --primary: #0ea5e9;
+      --primary-dark: #0284c7;
+      --text: #334155;
+      --muted: #64748b;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--text); background: var(--bg); }
+
+    /* ─── Nav ─── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+    }
+    .nav-brand { font-size: 1.1rem; font-weight: 800; color: var(--dark); letter-spacing: -0.02em; }
+    .nav-brand span { color: var(--primary); }
+    .nav-links { display: flex; gap: 1.75rem; align-items: center; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--dark); }
+    .nav-cta { background: var(--primary); color: #fff; padding: 0.5rem 1.25rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; text-decoration: none; transition: background 0.2s; }
+    .nav-cta:hover { background: var(--primary-dark); color: #fff; }
+    @media (max-width: 600px) { .nav-links a:not(.nav-cta) { display: none; } }
+
+    /* ─── Hero ─── */
+    .hero {
+      background: linear-gradient(135deg, var(--dark) 0%, #1e3a5f 100%);
+      color: #fff; padding: 6rem 2rem 5rem; text-align: center;
+    }
+    .hero-badge { display: inline-block; background: rgba(14,165,233,0.2); color: #7dd3fc; border: 1px solid rgba(14,165,233,0.3); padding: 0.3rem 1rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.5rem; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.15; margin-bottom: 1.25rem; }
+    .hero h1 em { font-style: normal; color: #7dd3fc; }
+    .hero p { color: #94a3b8; font-size: 1.1rem; max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.65; }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--primary); color: #fff; padding: 0.85rem 2rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; text-decoration: none; transition: background 0.2s; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; padding: 0.85rem 2rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); transition: background 0.2s; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.18); }
+
+    /* ─── Sections ─── */
+    section { padding: 5rem 2rem; }
+    .container { max-width: 900px; margin: 0 auto; }
+    .section-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--primary); margin-bottom: 0.6rem; }
+    .section-title { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; color: var(--dark); margin-bottom: 1rem; line-height: 1.25; }
+    .section-sub { color: var(--muted); font-size: 1rem; max-width: 520px; line-height: 1.65; margin-bottom: 3rem; }
+
+    /* ─── Services grid ─── */
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
+    .service-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; }
+    .service-icon { font-size: 1.75rem; margin-bottom: 0.9rem; }
+    .service-card h3 { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem; }
+    .service-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+
+    /* ─── About ─── */
+    #about { background: var(--surface); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+    @media (max-width: 640px) { .about-grid { grid-template-columns: 1fr; } }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 2rem; }
+    .stat { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 800; color: var(--primary); }
+    .stat-lbl { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+    .about-img { background: linear-gradient(135deg, #0f172a, #1e3a5f); border-radius: 12px; height: 340px; display: flex; align-items: center; justify-content: center; color: #7dd3fc; font-size: 4rem; }
+
+    /* ─── Blog / updates ─── */
+    .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.5rem; }
+    .blog-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .blog-img { height: 160px; background: linear-gradient(135deg, #e0f2fe, #bae6fd); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+    .blog-body { padding: 1.25rem; }
+    .blog-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--primary); }
+    .blog-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--dark); margin: 0.4rem 0 0.4rem; line-height: 1.4; }
+    .blog-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+    .blog-date { font-size: 0.75rem; color: var(--muted); margin-top: 0.75rem; }
+
+    /* ─── Contact form ─── */
+    #contact { background: var(--dark); color: #fff; }
+    #contact .section-title { color: #fff; }
+    #contact .section-sub { color: #94a3b8; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 3rem; align-items: start; }
+    @media (max-width: 680px) { .contact-grid { grid-template-columns: 1fr; } }
+    .contact-info p { font-size: 0.9rem; color: #94a3b8; line-height: 1.7; margin-bottom: 1.5rem; }
+    .contact-detail { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.9rem; font-size: 0.9rem; color: #cbd5e1; }
+    .contact-detail .icon { font-size: 1.1rem; }
+    .contact-form-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem; }
+    label { display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #94a3b8; margin-bottom: 0.35rem; margin-top: 1rem; }
+    label:first-of-type { margin-top: 0; }
+    input, select, textarea {
+      width: 100%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px; color: #f1f5f9; font-size: 0.95rem;
+      padding: 0.65rem 0.9rem; outline: none; transition: border-color 0.2s; font-family: inherit;
+    }
+    input::placeholder, textarea::placeholder { color: #475569; }
+    input:focus, textarea:focus { border-color: var(--primary); }
+    textarea { resize: vertical; min-height: 100px; }
+    .two-col-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 460px) { .two-col-form { grid-template-columns: 1fr; } }
+    .submit-btn {
+      background: var(--primary); border: none; border-radius: 8px;
+      color: #fff; cursor: pointer; font-size: 0.95rem; font-weight: 600;
+      padding: 0.85rem; width: 100%; margin-top: 1.25rem; transition: background 0.2s;
+    }
+    .submit-btn:hover    { background: var(--primary-dark); }
+    .submit-btn:disabled { background: #0369a1; cursor: not-allowed; }
+    .form-msg { margin-top: 0.9rem; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.875rem; display: none; }
+    .form-msg.success { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+    .form-msg.error   { background: #2d0a0a; color: #f87171; border: 1px solid #7f1d1d; }
+    .form-msg.show    { display: block; }
+
+    footer { background: #020617; color: #475569; text-align: center; padding: 2rem; font-size: 0.82rem; }
+    footer a { color: #7dd3fc; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Apex<span>Studio</span></div>
+  <div class="nav-links">
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="#updates">Updates</a>
+    <a href="#contact" class="nav-cta">Get in touch</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge">Open for projects</div>
+  <h1>We build things<br>that <em>actually work</em></h1>
+  <p>A small studio delivering web design, branding, and digital strategy for businesses that want to stand out — without the agency overhead.</p>
+  <div class="hero-btns">
+    <a href="#contact" class="btn-primary">Start a project</a>
+    <a href="#services" class="btn-secondary">See our work</a>
+  </div>
+</div>
+
+<!-- Services -->
+<section id="services">
+  <div class="container">
+    <div class="section-label">What we do</div>
+    <div class="section-title">Services built for growth</div>
+    <p class="section-sub">We focus on the handful of things that move the needle for small and medium businesses.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🎨</div>
+        <h3>Brand &amp; Identity</h3>
+        <p>Logo design, colour palettes, typography, and brand guidelines that give your business a consistent, professional face.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💻</div>
+        <h3>Web Design &amp; Dev</h3>
+        <p>Fast, accessible websites and landing pages. We ship clean code with no bloated CMS or maintenance surprises.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📈</div>
+        <h3>Digital Strategy</h3>
+        <p>SEO, content planning, and conversion optimisation. We help you attract the right visitors and turn them into customers.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <h3>Performance Audits</h3>
+        <p>Deep-dive reports on speed, accessibility, and search visibility — with a clear action plan, not just a score.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🛒</div>
+        <h3>E-commerce</h3>
+        <p>Online stores that are easy for you to manage and delightful for your customers to shop in.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔧</div>
+        <h3>Ongoing Support</h3>
+        <p>Monthly retainers for businesses that need a reliable partner on call — updates, fixes, and new features.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <div class="section-label">About us</div>
+        <div class="section-title">Small team,<br>big impact</div>
+        <p style="color:var(--muted);line-height:1.7;margin-bottom:1rem">
+          We started Apex Studio because we were tired of watching small businesses overpay for
+          slow agencies that delivered mediocre work. We're a tight team of designers and
+          developers who care about craft — and about your bottom line.
+        </p>
+        <p style="color:var(--muted);line-height:1.7">
+          Every project gets our full attention. No junior hand-offs, no cookie-cutter templates.
+          Just honest work at a fair price.
+        </p>
+        <div class="about-stats">
+          <div class="stat"><div class="stat-num">120+</div><div class="stat-lbl">Projects delivered</div></div>
+          <div class="stat"><div class="stat-num">98%</div><div class="stat-lbl">Client satisfaction</div></div>
+          <div class="stat"><div class="stat-num">6 yrs</div><div class="stat-lbl">In business</div></div>
+          <div class="stat"><div class="stat-num">4.9★</div><div class="stat-lbl">Average rating</div></div>
+        </div>
+      </div>
+      <div class="about-img">🏗️</div>
+    </div>
+  </div>
+</section>
+
+<!-- Blog / Updates -->
+<section id="updates">
+  <div class="container">
+    <div class="section-label">Updates</div>
+    <div class="section-title">Latest from the studio</div>
+    <p class="section-sub">Tips, case studies, and behind-the-scenes stories from our recent projects.</p>
+    <div class="blog-grid">
+      <div class="blog-card">
+        <div class="blog-img">🖼️</div>
+        <div class="blog-body">
+          <div class="blog-tag">Design</div>
+          <h3>Why your logo probably doesn't need a redesign</h3>
+          <p>Brand consistency beats novelty every time. Here's how to audit what you already have.</p>
+          <div class="blog-date">March 2026</div>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-img">⚡</div>
+        <div class="blog-body">
+          <div class="blog-tag">Performance</div>
+          <h3>Five fixes that cut our client's load time in half</h3>
+          <p>No new infrastructure, no rewrite. Just five targeted changes that made a measurable difference.</p>
+          <div class="blog-date">February 2026</div>
+        </div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-img">📊</div>
+        <div class="blog-body">
+          <div class="blog-tag">Strategy</div>
+          <h3>Local SEO: the low-hanging fruit most businesses miss</h3>
+          <p>Google Business Profile, local citations, and review strategy — a practical checklist.</p>
+          <div class="blog-date">January 2026</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="section-label" style="color:#7dd3fc">Contact</div>
+        <div class="section-title">Let's talk about<br>your project</div>
+        <p>Tell us a bit about what you need. We'll get back to you within one business day — no sales pitch, just a straight conversation.</p>
+        <div class="contact-detail"><span class="icon">📧</span> hello@apexstudio.example</div>
+        <div class="contact-detail"><span class="icon">📞</span> +31 20 123 4567</div>
+        <div class="contact-detail"><span class="icon">📍</span> Amsterdam, NL (remote-friendly)</div>
+      </div>
+      <div>
+        <div class="contact-form-card">
+          <form id="contact-form" novalidate>
+            <div class="two-col-form">
+              <div>
+                <label for="f-name">Your name</label>
+                <input type="text" id="f-name" placeholder="Jane Smith" required />
+              </div>
+              <div>
+                <label for="f-email">Email</label>
+                <input type="email" id="f-email" placeholder="jane@company.com" required />
+              </div>
+            </div>
+            <label for="f-subject">Subject</label>
+            <input type="text" id="f-subject" placeholder="Web redesign, branding, …" />
+            <label for="f-message">Message</label>
+            <textarea id="f-message" placeholder="Tell us about your project…" required></textarea>
+            <button type="submit" class="submit-btn" id="contact-btn">Send message →</button>
+          </form>
+          <div id="contact-msg" class="form-msg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Apex Studio · <a href="#contact">hello@apexstudio.example</a> · Made with Drift</p>
+</footer>
+
+<script>
+const form = document.getElementById('contact-form');
+const btn  = document.getElementById('contact-btn');
+const msg  = document.getElementById('contact-msg');
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const name    = document.getElementById('f-name').value.trim();
+  const email   = document.getElementById('f-email').value.trim();
+  const subject = document.getElementById('f-subject').value.trim();
+  const message = document.getElementById('f-message').value.trim();
+
+  if (!name || !email || !message) {
+    msg.textContent = 'Please fill in your name, email, and message.';
+    msg.className   = 'form-msg show error';
+    return;
+  }
+
+  btn.disabled    = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res  = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, subject, message }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      msg.textContent = data.payload?.message ?? 'Message sent!';
+      msg.className   = 'form-msg show success';
+      form.reset();
+    } else {
+      msg.textContent = data.payload?.error ?? 'Something went wrong.';
+      msg.className   = 'form-msg show error';
+    }
+  } catch {
+    msg.textContent = 'Could not reach the server. Please email us directly.';
+    msg.className   = 'form-msg show error';
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Send message →';
+  }
+});
+</script>
+</body>
+</html>
