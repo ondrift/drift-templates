@@ -1,0 +1,12 @@
+name: my-event
+atomic:
+  - dir: ./atomic/rsvp
+  - dir: ./atomic/get-rsvps
+backbone:
+  cache:
+    - key: rsvp:stats
+      file: ./backbone/rsvp-stats.json
+  nosql:
+    - collection: rsvps
+canvas:
+  - dir: ./canvas

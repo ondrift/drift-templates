@@ -1,0 +1,25 @@
+name: my-food-truck
+atomic:
+  - dir: ./atomic/get-menu
+  - dir: ./atomic/get-schedule
+  - dir: ./atomic/pre-order
+  - dir: ./atomic/notify-order
+backbone:
+  cache:
+    - key: truck-menu
+      file: ./backbone/menu.json
+    - key: truck-schedule
+      file: ./backbone/schedule.json
+  nosql:
+    - collection: orders
+  queues:
+    - name: order-queue
+  secrets:
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+    - key: TRUCK_NAME
+      value: "My Food Truck"
+canvas:
+  - dir: ./canvas

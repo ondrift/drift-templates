@@ -1,0 +1,36 @@
+{
+  "projects": [
+    {
+      "id": "project-saas",
+      "title": "SaaS Dashboard Redesign",
+      "description": "Redesigned the analytics dashboard for a B2B SaaS product. Improved user retention by 23%.",
+      "tags": ["UI/UX", "React", "TypeScript"],
+      "url": "https://example.com",
+      "image_url": "https://picsum.photos/seed/saas/600/400"
+    },
+    {
+      "id": "project-mobile",
+      "title": "Fitness Tracking App",
+      "description": "Built a cross-platform mobile app for tracking workouts and nutrition with social features.",
+      "tags": ["React Native", "Node.js", "PostgreSQL"],
+      "url": "https://example.com",
+      "image_url": "https://picsum.photos/seed/fitness/600/400"
+    },
+    {
+      "id": "project-ecommerce",
+      "title": "Artisan Marketplace",
+      "description": "Full-stack e-commerce platform for local artisans. Stripe integration, real-time inventory.",
+      "tags": ["Next.js", "Stripe", "Tailwind"],
+      "url": "https://example.com",
+      "image_url": "https://picsum.photos/seed/market/600/400"
+    },
+    {
+      "id": "project-api",
+      "title": "IoT Data Pipeline",
+      "description": "High-throughput data pipeline processing 2M events/day from IoT sensors. 99.99% uptime.",
+      "tags": ["Go", "Kafka", "TimescaleDB"],
+      "url": "https://example.com",
+      "image_url": "https://picsum.photos/seed/iot/600/400"
+    }
+  ]
+}

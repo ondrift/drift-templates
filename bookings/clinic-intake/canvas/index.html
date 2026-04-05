@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Clinic — Patient Intake & Appointments</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:    #ffffff;
+      --grey-50:  #f8f9fa;
+      --grey-100: #f1f3f5;
+      --grey-200: #e9ecef;
+      --grey-400: #adb5bd;
+      --grey-600: #6c757d;
+      --grey-800: #343a40;
+      --grey-900: #212529;
+      --blue:     #2b6cb0;
+      --blue-h:   #2c5282;
+      --blue-light: #ebf4ff;
+      --green-bg: #f0fdf4;
+      --green-tx: #166534;
+      --green-bd: #bbf7d0;
+      --red-bg:   #fef2f2;
+      --red-tx:   #991b1b;
+      --red-bd:   #fecaca;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--white); color: var(--grey-900); line-height: 1.6; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+      background: var(--white); border-bottom: 1px solid var(--grey-200);
+      padding: 0.9rem 2rem; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-size: 1.25rem; font-weight: 700; color: var(--blue); letter-spacing: -0.02em; }
+    .nav-links a {
+      color: var(--grey-600); text-decoration: none; margin-left: 1.75rem;
+      font-size: 0.82rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--blue); }
+    @media (max-width: 600px) { .nav-links { display: none; } }
+
+    /* HERO */
+    .hero {
+      padding: 8rem 2rem 5rem; text-align: center;
+      background: linear-gradient(135deg, var(--blue-light) 0%, var(--grey-50) 100%);
+    }
+    .hero-badge {
+      display: inline-block; background: var(--blue); color: var(--white);
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.3rem 0.9rem; border-radius: 100px; margin-bottom: 1.2rem;
+    }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; color: var(--grey-900); line-height: 1.15; margin-bottom: 1rem; }
+    .hero p { font-size: 1.05rem; color: var(--grey-600); max-width: 520px; margin: 0 auto 2rem; }
+    .hero-ctas { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--blue); color: var(--white); border: none; border-radius: 6px;
+      padding: 0.8rem 1.8rem; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.04em;
+      text-transform: uppercase; cursor: pointer; text-decoration: none; display: inline-block;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--blue-h); transform: translateY(-1px); }
+    .btn-primary:disabled { background: var(--grey-400); cursor: not-allowed; transform: none; }
+    .btn-outline {
+      background: transparent; color: var(--blue); border: 1.5px solid var(--blue); border-radius: 6px;
+      padding: 0.8rem 1.8rem; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.04em;
+      text-transform: uppercase; cursor: pointer; text-decoration: none; display: inline-block;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+    .btn-outline:hover { background: var(--blue); color: var(--white); transform: translateY(-1px); }
+
+    /* STEPS */
+    .steps-bar { background: var(--white); border-bottom: 1px solid var(--grey-200); padding: 2rem 2rem; }
+    .steps-inner { max-width: 700px; margin: 0 auto; display: flex; gap: 1rem; align-items: center; justify-content: center; }
+    .step-item { display: flex; align-items: center; gap: 0.5rem; }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; border: 2px solid var(--grey-200); color: var(--grey-400);
+      transition: all 0.3s;
+    }
+    .step-num.active { background: var(--blue); border-color: var(--blue); color: var(--white); }
+    .step-num.done { background: var(--green-tx); border-color: var(--green-tx); color: var(--white); }
+    .step-label { font-size: 0.82rem; font-weight: 600; color: var(--grey-600); }
+    .step-label.active { color: var(--grey-900); }
+    .step-connector { flex: 0 0 60px; height: 2px; background: var(--grey-200); }
+    @media (max-width: 500px) { .step-connector { flex: 0 0 20px; } .step-label { display: none; } }
+
+    /* FORMS SECTION */
+    .forms-section { background: var(--grey-50); padding: 3.5rem 2rem; }
+    .form-card {
+      max-width: 640px; margin: 0 auto; background: var(--white);
+      border: 1px solid var(--grey-200); border-radius: 10px;
+      padding: 2.5rem; box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+    }
+    .form-card h2 { font-size: 1.5rem; font-weight: 700; color: var(--grey-900); margin-bottom: 0.4rem; }
+    .form-card .form-subtitle { font-size: 0.9rem; color: var(--grey-600); margin-bottom: 2rem; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--grey-600); }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      border: 1.5px solid var(--grey-200); border-radius: 6px; padding: 0.7rem 0.9rem;
+      font-size: 0.95rem; font-family: inherit; color: var(--grey-900); background: var(--grey-50);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--blue); box-shadow: 0 0 0 3px rgba(43,108,176,0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 70px; }
+
+    .submit-btn { width: 100%; margin-top: 0.75rem; }
+
+    .feedback {
+      margin-top: 1rem; padding: 0.85rem 1rem; border-radius: 6px; font-size: 0.88rem; display: none;
+    }
+    .feedback.success { background: var(--green-bg); color: var(--green-tx); border: 1px solid var(--green-bd); display: block; }
+    .feedback.error { background: var(--red-bg); color: var(--red-tx); border: 1px solid var(--red-bd); display: block; }
+
+    .hidden { display: none; }
+
+    /* INFO SECTION */
+    .info-section { background: var(--white); padding: 4rem 2rem; }
+    .info-inner { max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2.5rem; text-align: center; }
+    @media (max-width: 640px) { .info-inner { grid-template-columns: 1fr; } }
+    .info-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .info-title { font-size: 1rem; font-weight: 700; color: var(--grey-900); margin-bottom: 0.35rem; }
+    .info-text { font-size: 0.88rem; color: var(--grey-600); line-height: 1.6; }
+
+    /* FOOTER */
+    footer { background: var(--grey-900); padding: 2rem; text-align: center; }
+    footer p { color: var(--grey-400); font-size: 0.82rem; }
+    footer a { color: var(--grey-400); text-decoration: none; }
+    footer a:hover { color: var(--blue); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">My Clinic</span>
+  <div class="nav-links">
+    <a href="#intake-section">Intake</a>
+    <a href="#appointment-section">Appointment</a>
+    <a href="#info-section">Info</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-badge">Now Accepting New Patients</span>
+  <h1>Your health,<br>our priority</h1>
+  <p>Complete your patient intake form and request an appointment online. Simple, secure, and fast.</p>
+  <div class="hero-ctas">
+    <a href="#intake-section" class="btn-primary">Start intake form</a>
+    <a href="#info-section" class="btn-outline">Learn more</a>
+  </div>
+</div>
+
+<!-- STEPS -->
+<div class="steps-bar" id="steps-bar">
+  <div class="steps-inner">
+    <div class="step-item">
+      <div class="step-num active" id="step-1-num">1</div>
+      <span class="step-label active" id="step-1-label">Patient Intake</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item">
+      <div class="step-num" id="step-2-num">2</div>
+      <span class="step-label" id="step-2-label">Request Appointment</span>
+    </div>
+  </div>
+</div>
+
+<!-- INTAKE FORM -->
+<section class="forms-section" id="intake-section">
+  <div class="form-card" id="intake-card">
+    <h2>Patient Intake Form</h2>
+    <p class="form-subtitle">Please provide your information below. Fields marked with * are required.</p>
+    <form id="intake-form" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="intake-name">Full name *</label>
+          <input type="text" id="intake-name" placeholder="Jane Smith" required />
+        </div>
+        <div class="form-group">
+          <label for="intake-email">Email *</label>
+          <input type="email" id="intake-email" placeholder="jane@example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="intake-phone">Phone *</label>
+          <input type="tel" id="intake-phone" placeholder="(555) 123-4567" required />
+        </div>
+        <div class="form-group">
+          <label for="intake-dob">Date of birth *</label>
+          <input type="date" id="intake-dob" required />
+        </div>
+        <div class="form-group full">
+          <label for="intake-reason">Reason for visit *</label>
+          <textarea id="intake-reason" placeholder="Describe your reason for visiting..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="intake-allergies">Known allergies</label>
+          <input type="text" id="intake-allergies" placeholder="e.g. Penicillin, Latex" />
+        </div>
+        <div class="form-group">
+          <label for="intake-medications">Current medications</label>
+          <input type="text" id="intake-medications" placeholder="e.g. Ibuprofen, Metformin" />
+        </div>
+        <div class="form-group full">
+          <label for="intake-insurance">Insurance provider</label>
+          <input type="text" id="intake-insurance" placeholder="e.g. Blue Cross Blue Shield" />
+        </div>
+      </div>
+      <button type="submit" class="btn-primary submit-btn" id="intake-btn">Submit intake form</button>
+    </form>
+    <div id="intake-feedback" class="feedback"></div>
+  </div>
+
+  <!-- APPOINTMENT FORM (hidden until intake is complete) -->
+  <div class="form-card hidden" id="appointment-card">
+    <h2>Request an Appointment</h2>
+    <p class="form-subtitle">Your intake form has been submitted. Now choose your preferred appointment time.</p>
+    <form id="appointment-form" novalidate>
+      <div class="form-row">
+        <div class="form-group full">
+          <label for="appt-email">Your email (must match intake) *</label>
+          <input type="email" id="appt-email" required readonly />
+        </div>
+        <div class="form-group">
+          <label for="appt-date">Preferred date *</label>
+          <input type="date" id="appt-date" required />
+        </div>
+        <div class="form-group">
+          <label for="appt-time">Preferred time *</label>
+          <select id="appt-time" required>
+            <option value="">-- select --</option>
+            <optgroup label="Morning">
+              <option>08:00</option><option>08:30</option><option>09:00</option><option>09:30</option>
+              <option>10:00</option><option>10:30</option><option>11:00</option><option>11:30</option>
+            </optgroup>
+            <optgroup label="Afternoon">
+              <option>12:00</option><option>12:30</option><option>13:00</option><option>13:30</option>
+              <option>14:00</option><option>14:30</option><option>15:00</option><option>15:30</option>
+              <option>16:00</option><option>16:30</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="appt-type">Appointment type *</label>
+          <select id="appt-type" required>
+            <option value="">-- select --</option>
+            <option>General Checkup</option>
+            <option>Dental Cleaning</option>
+            <option>Consultation</option>
+            <option>Follow-up</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="appt-notes">Additional notes</label>
+          <input type="text" id="appt-notes" placeholder="Anything we should know..." />
+        </div>
+      </div>
+      <button type="submit" class="btn-primary submit-btn" id="appt-btn">Request appointment</button>
+    </form>
+    <div id="appt-feedback" class="feedback"></div>
+  </div>
+</section>
+
+<!-- INFO -->
+<section class="info-section" id="info-section">
+  <div class="info-inner">
+    <div>
+      <div class="info-icon">&#128336;</div>
+      <div class="info-title">Office Hours</div>
+      <div class="info-text">Monday - Friday<br>8:00 AM - 5:00 PM<br>Saturday by appointment</div>
+    </div>
+    <div>
+      <div class="info-icon">&#128222;</div>
+      <div class="info-title">Contact Us</div>
+      <div class="info-text">(555) 000-1234<br>info@myclinic.example</div>
+    </div>
+    <div>
+      <div class="info-icon">&#127973;</div>
+      <div class="info-title">Location</div>
+      <div class="info-text">123 Health Avenue<br>Suite 200<br>Anytown, USA</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 My Clinic &middot; 123 Health Avenue, Anytown &middot; <a href="mailto:info@myclinic.example">info@myclinic.example</a></p>
+</footer>
+
+<script>
+// ---- STEP INDICATORS ----
+function setStep(step) {
+  const s1n = document.getElementById('step-1-num');
+  const s1l = document.getElementById('step-1-label');
+  const s2n = document.getElementById('step-2-num');
+  const s2l = document.getElementById('step-2-label');
+  if (step === 2) {
+    s1n.className = 'step-num done'; s1n.textContent = '\u2713';
+    s1l.className = 'step-label';
+    s2n.className = 'step-num active';
+    s2l.className = 'step-label active';
+  }
+}
+
+// ---- INTAKE FORM ----
+const intakeForm = document.getElementById('intake-form');
+const intakeBtn  = document.getElementById('intake-btn');
+const intakeFb   = document.getElementById('intake-feedback');
+
+intakeForm.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var name  = document.getElementById('intake-name').value.trim();
+  var email = document.getElementById('intake-email').value.trim();
+  var phone = document.getElementById('intake-phone').value.trim();
+  var dob   = document.getElementById('intake-dob').value;
+  var reason = document.getElementById('intake-reason').value.trim();
+  var allergies = document.getElementById('intake-allergies').value.trim();
+  var medications = document.getElementById('intake-medications').value.trim();
+  var insurance = document.getElementById('intake-insurance').value.trim();
+
+  if (!name || !email || !phone || !dob || !reason) {
+    intakeFb.textContent = 'Please fill in all required fields.';
+    intakeFb.className = 'feedback error';
+    return;
+  }
+
+  intakeBtn.disabled = true; intakeBtn.textContent = 'Submitting...';
+  intakeFb.className = 'feedback';
+
+  try {
+    var res = await fetch('/api/submit-intake', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, email: email, phone: phone, date_of_birth: dob, reason: reason, allergies: allergies, medications: medications, insurance_provider: insurance }),
+    });
+    var data = await res.json();
+    if (res.ok) {
+      intakeFb.textContent = data.payload?.message || 'Intake form submitted successfully.';
+      intakeFb.className = 'feedback success';
+      // Show appointment form
+      setTimeout(function() {
+        document.getElementById('intake-card').classList.add('hidden');
+        document.getElementById('appointment-card').classList.remove('hidden');
+        document.getElementById('appt-email').value = email;
+        document.getElementById('appt-date').min = new Date().toISOString().split('T')[0];
+        setStep(2);
+        document.getElementById('appointment-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 1500);
+    } else {
+      intakeFb.textContent = data.payload?.error || 'Something went wrong. Please try again.';
+      intakeFb.className = 'feedback error';
+    }
+  } catch (err) {
+    intakeFb.textContent = 'Could not reach the server. Please call us directly.';
+    intakeFb.className = 'feedback error';
+  } finally {
+    intakeBtn.disabled = false; intakeBtn.textContent = 'Submit intake form';
+  }
+});
+
+// ---- APPOINTMENT FORM ----
+var apptForm = document.getElementById('appointment-form');
+var apptBtn  = document.getElementById('appt-btn');
+var apptFb   = document.getElementById('appt-feedback');
+
+apptForm.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var email = document.getElementById('appt-email').value.trim();
+  var date  = document.getElementById('appt-date').value;
+  var time  = document.getElementById('appt-time').value;
+  var type  = document.getElementById('appt-type').value;
+  var notes = document.getElementById('appt-notes').value.trim();
+
+  if (!email || !date || !time || !type) {
+    apptFb.textContent = 'Please fill in all required fields.';
+    apptFb.className = 'feedback error';
+    return;
+  }
+
+  apptBtn.disabled = true; apptBtn.textContent = 'Submitting...';
+  apptFb.className = 'feedback';
+
+  try {
+    var res = await fetch('/api/request-appointment', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ patient_email: email, preferred_date: date, preferred_time: time, appointment_type: type, notes: notes }),
+    });
+    var data = await res.json();
+    if (res.ok) {
+      apptFb.textContent = data.payload?.message || 'Appointment request submitted. We will confirm within 24 hours.';
+      apptFb.className = 'feedback success';
+      apptForm.reset();
+      document.getElementById('appt-email').value = email;
+    } else {
+      apptFb.textContent = data.payload?.error || 'Something went wrong. Please try again.';
+      apptFb.className = 'feedback error';
+    }
+  } catch (err) {
+    apptFb.textContent = 'Could not reach the server. Please call us directly.';
+    apptFb.className = 'feedback error';
+  } finally {
+    apptBtn.disabled = false; apptBtn.textContent = 'Request appointment';
+  }
+});
+</script>
+</body>
+</html>

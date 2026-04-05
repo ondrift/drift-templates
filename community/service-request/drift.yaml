@@ -1,0 +1,21 @@
+name: my-city-services
+atomic:
+  - dir: ./atomic/submit-request
+  - dir: ./atomic/check-status
+  - dir: ./atomic/notify-department
+backbone:
+  nosql:
+    - collection: requests
+  queues:
+    - name: department-queue
+  secrets:
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+    - key: DEPARTMENT_EMAIL
+      env: DEPARTMENT_EMAIL
+    - key: CITY_NAME
+      value: "My City"
+canvas:
+  - dir: ./canvas

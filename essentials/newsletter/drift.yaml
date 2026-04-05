@@ -1,0 +1,17 @@
+name: my-newsletter
+atomic:
+  - dir: ./atomic/subscribe
+  - dir: ./atomic/unsubscribe
+  - dir: ./atomic/send-welcome
+backbone:
+  nosql:
+    - collection: subscribers
+  queues:
+    - name: signup-queue
+  secrets:
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+canvas:
+  - dir: ./canvas

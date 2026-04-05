@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>My City Services</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,sans-serif;color:#111;line-height:1.5}
+nav{background:#1a56db;color:#fff;padding:.7rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:9}
+nav b{font-size:1rem}nav a{color:rgba(255,255,255,.8);text-decoration:none;margin-left:1rem;font-size:.75rem;font-weight:600;text-transform:uppercase}
+.hero{background:#1a56db;color:#fff;text-align:center;padding:2.5rem 1.5rem}
+.hero h1{font-size:clamp(1.5rem,5vw,2.2rem);font-weight:800;margin-bottom:.4rem}
+.hero p{opacity:.85;max-width:440px;margin:0 auto 1rem}
+.hc{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;padding:.5rem 1rem;border-radius:5px;font-size:.75rem;font-weight:700;text-decoration:none;border:none;cursor:pointer}
+.bw{background:#fff;color:#1a56db}.bo{background:0 0;color:#fff;border:2px solid rgba(255,255,255,.4)}
+.bp{background:#1a56db;color:#fff}.bp:disabled{background:#d1d5db;cursor:not-allowed}
+.sec{background:#f3f4f6;padding:2rem 1.5rem}
+h2{font-size:1.15rem;font-weight:700;margin-bottom:.15rem;text-align:center}.sub{text-align:center;color:#6b7280;margin-bottom:.8rem}
+.cg{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;max-width:420px;margin:0 auto}
+@media(min-width:600px){.cg{grid-template-columns:repeat(6,1fr);max-width:560px}}
+.cc{background:#fff;border:2px solid #d1d5db;border-radius:8px;padding:.6rem .3rem;text-align:center;cursor:pointer}
+.cc:hover,.cc.s{border-color:#1a56db}.cc.s{background:#eff6ff}
+.cc span:first-child{font-size:1.4rem;display:block}.cc span:last-child{font-size:.6rem;font-weight:700}
+.fm{padding:2rem 1.5rem;max-width:500px;margin:0 auto}.fm h2,.fm .sub{text-align:left}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem}
+@media(max-width:500px){.fr{grid-template-columns:1fr}}
+.fg{display:flex;flex-direction:column;gap:.1rem}.fu{grid-column:1/-1}
+label{font-size:.6rem;font-weight:700;color:#6b7280}
+input,select,textarea{border:1.5px solid #d1d5db;border-radius:4px;padding:.45rem .6rem;font-size:.85rem;font-family:inherit;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#1a56db}textarea{min-height:60px}
+.sw{width:100%;margin-top:.2rem}
+.fb{margin-top:.4rem;padding:.4rem .6rem;border-radius:4px;font-size:.78rem;display:none}
+.fb.ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;display:block}
+.fb.er{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;display:block}
+.ti{max-width:380px;margin:0 auto;text-align:center}
+.sr{display:flex;gap:.4rem;margin-bottom:.5rem}.sr input{flex:1}
+.sc{background:#fff;border:1.5px solid #d1d5db;border-radius:5px;padding:.7rem;text-align:left;display:none}.sc.v{display:block}
+.sc dl{display:grid;grid-template-columns:auto 1fr;gap:.2rem .5rem}
+dt{font-size:.6rem;font-weight:700;color:#6b7280;align-self:center}dd{font-size:.85rem;font-weight:600}
+.bg{display:inline-block;padding:.08rem .35rem;border-radius:99px;font-size:.58rem;font-weight:700}
+.bo2{background:#fef3c7;color:#d97706}.bp2{background:#eff6ff;color:#1a56db}.br2{background:#ecfdf5;color:#059669}
+.se{color:#dc2626;font-size:.78rem;margin-top:.3rem;display:none}.se.v{display:block}
+footer{background:#111;color:rgba(255,255,255,.4);padding:.8rem;text-align:center;font-size:.7rem}
+</style></head>
+<body>
+<nav><b>My City Services</b><div><a href="#rpt">Report</a><a href="#trk">Track</a></div></nav>
+<div class="hero"><h1>Report a City Issue</h1><p>Submit a request and we will route it to the right department.</p><div class="hc"><a href="#rpt" class="btn bw">Report Issue</a><a href="#trk" class="btn bo">Track Request</a></div></div>
+<section class="sec"><h2>What would you like to report?</h2><p class="sub">Select a category</p>
+<div class="cg" id="cg"><div class="cc" data-cat="pothole"><span>&#x1f6a7;</span><span>Pothole</span></div><div class="cc" data-cat="streetlight"><span>&#x1f4a1;</span><span>Streetlight</span></div><div class="cc" data-cat="graffiti"><span>&#x1f3a8;</span><span>Graffiti</span></div><div class="cc" data-cat="noise"><span>&#x1f50a;</span><span>Noise</span></div><div class="cc" data-cat="sidewalk"><span>&#x1f6b6;</span><span>Sidewalk</span></div><div class="cc" data-cat="other"><span>&#x2753;</span><span>Other</span></div></div></section>
+<section class="fm" id="rpt"><h2>Submit a Service Request</h2><p class="sub">We will log your request immediately.</p>
+<form id="rf" novalidate>
+<div class="fr"><div class="fg"><label>Name</label><input id="fn" placeholder="Jane Smith" required/></div><div class="fg"><label>Email</label><input type="email" id="fe" placeholder="jane@example.com" required/></div></div>
+<div class="fr"><div class="fg"><label>Category</label><select id="fc" required><option value="">--</option><option value="pothole">Pothole</option><option value="streetlight">Streetlight</option><option value="graffiti">Graffiti</option><option value="noise">Noise</option><option value="sidewalk">Sidewalk</option><option value="other">Other</option></select></div><div class="fg"><label>Location</label><input id="fl" placeholder="123 Main St"/></div></div>
+<div class="fr"><div class="fg fu"><label>Description</label><textarea id="fd" placeholder="Describe the issue..." required></textarea></div></div>
+<button type="submit" class="btn bp sw" id="rb">Submit Request</button></form><div id="fb" class="fb"></div></section>
+<section class="sec" id="trk"><div class="ti"><h2>Track Your Request</h2><p class="sub">Enter your ticket number.</p>
+<div class="sr"><input id="si" placeholder="SR-123456"/><button class="btn bp" id="sb" type="button">Look Up</button></div>
+<div class="sc" id="sc"><dl><dt>Ticket</dt><dd id="vt"></dd><dt>Category</dt><dd id="vc"></dd><dt>Status</dt><dd id="vs"></dd><dt>Submitted</dt><dd id="vd"></dd></dl></div><p class="se" id="se"></p></div></section>
+<footer>My City Services</footer>
+<script>
+var $=document.getElementById.bind(document),cg=$('cg'),cs=$('fc'),fb=$('fb');
+cg.onclick=function(e){var c=e.target.closest('.cc');if(!c)return;cg.querySelectorAll('.cc').forEach(function(x){x.classList.remove('s')});c.classList.add('s');cs.value=c.dataset.cat;$('rpt').scrollIntoView({behavior:'smooth'})};
+$('rf').onsubmit=async function(e){e.preventDefault();var b=$('rb'),n=$('fn').value.trim(),m=$('fe').value.trim(),a=cs.value,l=$('fl').value.trim(),d=$('fd').value.trim();if(!n||!m||!a||!d){fb.textContent='Please fill in all required fields.';fb.className='fb er';return}b.disabled=1;b.textContent='Submitting...';fb.className='fb';try{var r=await fetch('/api/submit-request',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:m,category:a,location:l,description:d})}),j=await r.json();if(r.ok){fb.textContent=j.payload?.message??'Request logged.';fb.className='fb ok';this.reset();cg.querySelectorAll('.cc').forEach(function(x){x.classList.remove('s')})}else{fb.textContent=j.payload?.error??'Error.';fb.className='fb er'}}catch(x){fb.textContent='Server unreachable.';fb.className='fb er'}finally{b.disabled=0;b.textContent='Submit Request'}};
+$('sb').onclick=async function(){var t=$('si').value.trim(),c=$('sc'),e=$('se');if(!t)return;c.classList.remove('v');e.classList.remove('v');this.disabled=1;this.textContent='...';try{var r=await fetch('/api/check-status?ticket='+encodeURIComponent(t)),j=await r.json();if(r.ok&&j.payload){$('vt').textContent=j.payload.ticket;$('vc').textContent=j.payload.category;var s=j.payload.status,k=s==='open'?'bo2':s==='in_progress'?'bp2':'br2';$('vs').innerHTML='<span class="bg '+k+'">'+s+'</span>';var d=new Date(j.payload.submitted_at);$('vd').textContent=d.toLocaleDateString()+' '+d.toLocaleTimeString();c.classList.add('v')}else{e.textContent=j.payload?.error??'Not found.';e.classList.add('v')}}catch(x){e.textContent='Server unreachable.';e.classList.add('v')}finally{this.disabled=0;this.textContent='Look Up'}};
+</script></body></html>

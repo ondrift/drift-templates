@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Property Listings</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8f9fa;color:#1a1a2e}
+header{background:#1a1a2e;color:#fff;padding:2rem;text-align:center}
+header h1{font-size:1.8rem;margin-bottom:.3rem}
+header p{opacity:.7;font-size:.95rem}
+.container{max-width:900px;margin:0 auto;padding:1.5rem}
+.listing{background:#fff;border-radius:10px;overflow:hidden;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.listing img{width:100%;height:220px;object-fit:cover}
+.listing-body{padding:1.2rem}
+.listing-body h2{font-size:1.2rem;margin-bottom:.3rem}
+.listing-price{font-size:1.4rem;font-weight:700;color:#2563eb;margin:.4rem 0}
+.listing-meta{display:flex;gap:1rem;font-size:.85rem;color:#666;margin-bottom:.6rem}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.75rem;font-weight:600;text-transform:uppercase;margin-bottom:.5rem}
+.badge-active{background:#dcfce7;color:#166534}
+.badge-pending{background:#fef3c7;color:#92400e}
+.btn{display:inline-block;padding:.5rem 1rem;border:none;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:600;margin-top:.5rem;margin-right:.5rem}
+.btn-primary{background:#2563eb;color:#fff}
+.btn-secondary{background:#e5e7eb;color:#374151}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center}
+.overlay.active{display:flex}
+.form-box{background:#fff;padding:1.5rem;border-radius:10px;width:90%;max-width:440px}
+.form-box h3{margin-bottom:1rem}
+.form-box input,.form-box textarea,.form-box select{width:100%;padding:.5rem;margin-bottom:.8rem;border:1px solid #d1d5db;border-radius:6px;font-size:.9rem}
+.form-box textarea{height:80px;resize:vertical}
+.form-box button[type=submit]{width:100%;padding:.6rem;background:#2563eb;color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer}
+.close{float:right;background:none;border:none;font-size:1.2rem;cursor:pointer;color:#999}
+.msg{padding:.6rem;border-radius:6px;margin-top:.5rem;font-size:.85rem}
+.msg-ok{background:#dcfce7;color:#166534}
+.msg-err{background:#fecaca;color:#991b1b}
+</style>
+</head>
+<body>
+<header><h1>Jane Smith — Real Estate</h1><p>Find your perfect home</p></header>
+<div class="container"><p id="loading">Loading listings...</p><div id="listings"></div></div>
+<div class="overlay" id="inqO"><div class="form-box"><button class="close" onclick="hide('inqO')">&times;</button><h3>Ask About This Property</h3><form onsubmit="return sendInq(event)"><input type="hidden" id="i-lid"><input id="i-name" placeholder="Your name" required><input id="i-email" type="email" placeholder="Email" required><input id="i-phone" type="tel" placeholder="Phone (optional)"><textarea id="i-msg" placeholder="Message"></textarea><button type="submit">Send Inquiry</button></form><div id="i-res"></div></div></div>
+<div class="overlay" id="rsvpO"><div class="form-box"><button class="close" onclick="hide('rsvpO')">&times;</button><h3>RSVP for Open House</h3><form onsubmit="return sendRsvp(event)"><input type="hidden" id="r-lid"><input id="r-name" placeholder="Your name" required><input id="r-email" type="email" placeholder="Email" required><input id="r-phone" type="tel" placeholder="Phone (optional)"><select id="r-party"><option value="1">Just me</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select><button type="submit">RSVP</button></form><div id="r-res"></div></div></div>
+<script>
+function show(id,lid){document.getElementById(id).classList.add('active');const h=id==='inqO'?'i-lid':'r-lid';document.getElementById(h).value=lid}
+function hide(id){document.getElementById(id).classList.remove('active')}
+fetch('/api/get-listings').then(r=>r.json()).then(d=>{
+  const items=d.payload?.listings||[];document.getElementById('loading').style.display='none';const c=document.getElementById('listings');
+  if(!items.length){c.innerHTML='<p>No listings yet.</p>';return}
+  items.forEach(l=>{const bc=l.status==='pending'?'badge-pending':'badge-active';let b=`<button class="btn btn-primary" onclick="show('inqO','${l.id}')">Inquire</button>`;if(l.open_house_date)b+=`<button class="btn btn-secondary" onclick="show('rsvpO','${l.id}')">Open House ${l.open_house_date}</button>`;c.innerHTML+=`<div class="listing"><img src="${l.image_url}" alt=""><div class="listing-body"><span class="badge ${bc}">${l.status}</span><h2>${l.address}</h2><div class="listing-price">$${Number(l.price).toLocaleString()}</div><div class="listing-meta"><span>${l.bedrooms} bed</span><span>${l.bathrooms} bath</span><span>${Number(l.sqft).toLocaleString()} sqft</span></div><p>${l.description}</p>${b}</div></div>`})
+}).catch(()=>{document.getElementById('loading').textContent='Could not load listings.'});
+async function sendInq(e){e.preventDefault();try{const r=await fetch('/api/inquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({listing_id:document.getElementById('i-lid').value,name:document.getElementById('i-name').value,email:document.getElementById('i-email').value,phone:document.getElementById('i-phone').value,message:document.getElementById('i-msg').value})});const d=await r.json();document.getElementById('i-res').innerHTML=`<div class="msg ${r.ok?'msg-ok':'msg-err'}">${d.payload?.message||d.payload?.error||'Sent!'}</div>`}catch(x){document.getElementById('i-res').innerHTML='<div class="msg msg-err">Network error</div>'}return false}
+async function sendRsvp(e){e.preventDefault();try{const r=await fetch('/api/rsvp-open-house',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({listing_id:document.getElementById('r-lid').value,name:document.getElementById('r-name').value,email:document.getElementById('r-email').value,phone:document.getElementById('r-phone').value,party_size:+document.getElementById('r-party').value})});const d=await r.json();document.getElementById('r-res').innerHTML=`<div class="msg ${r.ok?'msg-ok':'msg-err'}">${d.payload?.message||d.payload?.error||'RSVP confirmed!'}</div>`}catch(x){document.getElementById('r-res').innerHTML='<div class="msg msg-err">Network error</div>'}return false}
+</script>
+</body>
+</html>

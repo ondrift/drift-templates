@@ -1,0 +1,22 @@
+name: my-clinic
+atomic:
+  - dir: ./atomic/submit-intake
+  - dir: ./atomic/request-appointment
+  - dir: ./atomic/notify-staff
+backbone:
+  nosql:
+    - collection: patients
+    - collection: appointments
+  queues:
+    - name: staff-queue
+  secrets:
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+    - key: CLINIC_NAME
+      value: "My Clinic"
+    - key: STAFF_EMAIL
+      env: STAFF_EMAIL
+canvas:
+  - dir: ./canvas

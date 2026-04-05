@@ -1,0 +1,22 @@
+name: my-digital-store
+atomic:
+  - dir: ./atomic/get-products
+  - dir: ./atomic/purchase
+  - dir: ./atomic/deliver
+backbone:
+  cache:
+    - key: digital-catalogue
+      file: ./backbone/catalogue.json
+  nosql:
+    - collection: purchases
+  queues:
+    - name: delivery-queue
+  secrets:
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+    - key: STORE_NAME
+      value: "My Digital Store"
+canvas:
+  - dir: ./canvas

@@ -1,0 +1,29 @@
+name: my-store
+atomic:
+  - dir: ./atomic/get-products
+  - dir: ./atomic/cart
+  - dir: ./atomic/checkout
+  - dir: ./atomic/order-confirm
+backbone:
+  cache:
+    - key: products:catalogue
+      file: ./backbone/catalogue.json
+    - key: products:product-tshirt
+      file: ./backbone/product-tshirt.json
+    - key: products:product-hoodie
+      file: ./backbone/product-hoodie.json
+    - key: products:product-mug
+      file: ./backbone/product-mug.json
+  nosql:
+    - collection: orders
+  queues:
+    - name: order-queue
+  secrets:
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+    - key: STORE_NAME
+      value: "My Store"
+canvas:
+  - dir: ./canvas

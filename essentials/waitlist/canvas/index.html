@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Waitlist</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0b0d11;--bg2:#141720;--sf:#1a1e2a;--bd:#2a2f3e;--tx:#e4e7ef;--mt:#8a8fa3;--ac:#6366f1;--ah:#818cf8;--gn:#34d399;--rd:#f87171}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem}
+.ctr{width:100%;max-width:480px;text-align:center}
+.badge{display:inline-block;background:rgba(99,102,241,.12);color:var(--ah);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.35rem 1rem;border-radius:99px;border:1px solid rgba(99,102,241,.2);margin-bottom:1.5rem}
+h1{font-size:clamp(2rem,6vw,3rem);font-weight:800;line-height:1.1;margin-bottom:1rem}
+h1 span{color:var(--ah)}
+.sub{color:var(--mt);font-size:1.05rem;line-height:1.6;margin:0 auto 2.5rem;max-width:400px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:2rem;margin-bottom:1.5rem}
+.fg{text-align:left;margin-bottom:1rem}
+.fg label{display:block;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mt);margin-bottom:.3rem}
+.fg input{width:100%;background:var(--bg2);border:1.5px solid var(--bd);border-radius:10px;padding:.75rem 1rem;font-size:.95rem;color:var(--tx);font-family:inherit;outline:none}
+.fg input::placeholder{color:#555a6e}
+.fg input:focus{border-color:var(--ac)}
+.rt{text-align:left;margin-bottom:1rem}
+.rt button{background:none;border:none;color:var(--ah);font-size:.82rem;cursor:pointer;font-family:inherit;padding:0}
+.rf{display:none}.rf.show{display:block}
+.sbtn{width:100%;background:var(--ac);color:#fff;border:none;border-radius:10px;padding:.85rem 1.5rem;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;margin-top:.5rem}
+.sbtn:hover{background:var(--ah)}
+.sbtn:disabled{background:#444;cursor:not-allowed}
+.fb{margin-top:1rem;padding:.8rem 1rem;border-radius:10px;font-size:.88rem;line-height:1.5;display:none}
+.fb.ok{background:rgba(52,211,153,.1);color:var(--gn);border:1px solid rgba(52,211,153,.2);display:block}
+.fb.err{background:rgba(248,113,113,.1);color:var(--rd);border:1px solid rgba(248,113,113,.2);display:block}
+.sv{display:none;text-align:center}.sv.show{display:block}
+.fv.hide{display:none}
+.pn{font-size:3.5rem;font-weight:800;color:var(--ah);line-height:1;margin-bottom:.3rem}
+.pl{font-size:.82rem;color:var(--mt);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:1.2rem}
+.rb{background:var(--bg2);border:1.5px dashed var(--bd);border-radius:10px;padding:1rem;margin-bottom:1rem}
+.rb .lbl{font-size:.7rem;color:var(--mt);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:.3rem}
+.rb .code{font-size:1.3rem;font-weight:700;color:var(--tx);font-family:monospace;letter-spacing:.04em}
+.cpb{margin-top:.75rem;background:none;border:1.5px solid var(--bd);color:var(--mt);border-radius:8px;padding:.45rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit}
+.cpb:hover{border-color:var(--ac);color:var(--ah)}
+.sm{color:var(--mt);font-size:.88rem;line-height:1.6;margin-top:.8rem}
+.cs{margin-top:.5rem;text-align:center}
+.cs>button{background:none;border:none;color:var(--mt);font-size:.82rem;cursor:pointer;font-family:inherit;padding:0}
+.cs>button:hover{color:var(--ah)}
+.cf{display:none;margin-top:1rem}.cf.show{display:flex;gap:.5rem}
+.cf input{flex:1;background:var(--sf);border:1.5px solid var(--bd);border-radius:10px;padding:.65rem 1rem;font-size:.9rem;color:var(--tx);font-family:inherit;outline:none}
+.ckb{background:var(--sf);border:1.5px solid var(--bd);border-radius:10px;padding:.65rem 1.2rem;font-size:.82rem;font-weight:600;color:var(--tx);cursor:pointer;font-family:inherit}
+.ckb:hover{border-color:var(--ac);color:var(--ah)}
+footer{margin-top:2rem;color:#444;font-size:.75rem}
+</style>
+</head>
+<body>
+<div class="ctr">
+  <div class="badge">Coming Soon</div>
+  <h1>Early access to <span>Your Product</span></h1>
+  <p class="sub">Be first to know when we launch. Join the waitlist and secure your spot.</p>
+  <div class="card">
+    <div class="fv" id="fv">
+      <form id="sf" novalidate>
+        <div class="fg"><label for="name">Name</label><input type="text" id="name" placeholder="Jane Smith" required/></div>
+        <div class="fg"><label for="email">Email</label><input type="email" id="email" placeholder="jane@example.com" required/></div>
+        <div class="rt"><button type="button" id="tref">Referral code?</button></div>
+        <div class="fg rf" id="rfl"><label for="ref">Referral Code</label><input type="text" id="ref" placeholder="ref-42"/></div>
+        <button type="submit" class="sbtn" id="sbtn">Join the waitlist</button>
+      </form>
+      <div id="fb" class="fb"></div>
+    </div>
+    <div class="sv" id="sv">
+      <div class="pn" id="rpos">--</div>
+      <div class="pl">Your waitlist position</div>
+      <div class="rb"><div class="lbl">Your referral code</div><div class="code" id="rcode">--</div><button class="cpb" id="cpb">Copy</button></div>
+      <p class="sm">Share your code with friends to move up the list.</p>
+    </div>
+  </div>
+  <div class="cs">
+    <button id="ctgl">Check your position</button>
+    <div class="cf" id="cf"><input type="email" id="ceml" placeholder="Your email"/><button class="ckb" id="ckb">Check</button></div>
+    <div id="cfb" class="fb" style="margin-top:.75rem"></div>
+  </div>
+</div>
+<footer>Drift</footer>
+<script>
+const sf=document.getElementById('sf'),sb=document.getElementById('sbtn'),fb=document.getElementById('fb'),fv=document.getElementById('fv'),sv=document.getElementById('sv');
+document.getElementById('tref').addEventListener('click',()=>document.getElementById('rfl').classList.toggle('show'));
+sf.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const n=document.getElementById('name').value.trim(),em=document.getElementById('email').value.trim(),rb=document.getElementById('ref').value.trim();
+  if(!n||!em){fb.textContent='Name and email required.';fb.className='fb err';return}
+  sb.disabled=true;sb.textContent='Joining...';fb.className='fb';
+  try{
+    const r=await fetch('/api/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:em,referred_by:rb})});
+    const d=await r.json();
+    if(r.ok){document.getElementById('rpos').textContent='#'+d.payload.position;document.getElementById('rcode').textContent=d.payload.referral_code;fv.classList.add('hide');sv.classList.add('show')}
+    else{fb.textContent=d.payload?.error||'Try again.';fb.className='fb err'}
+  }catch{fb.textContent='Network error.';fb.className='fb err'}
+  finally{sb.disabled=false;sb.textContent='Join the waitlist'}
+});
+document.getElementById('cpb').addEventListener('click',()=>{
+  const c=document.getElementById('rcode').textContent;
+  navigator.clipboard.writeText(c).then(()=>{const b=document.getElementById('cpb');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy',1500)})
+});
+document.getElementById('ctgl').addEventListener('click',()=>document.getElementById('cf').classList.toggle('show'));
+document.getElementById('ckb').addEventListener('click',async()=>{
+  const em=document.getElementById('ceml').value.trim(),cf=document.getElementById('cfb');
+  if(!em){cf.textContent='Email required.';cf.className='fb err';return}
+  cf.className='fb';
+  try{
+    const r=await fetch('/api/check-position?email='+encodeURIComponent(em));const d=await r.json();
+    if(r.ok){const p=d.payload;cf.textContent='#'+p.position+' of '+p.total+' — Code: '+p.referral_code;cf.className='fb ok'}
+    else{cf.textContent=d.payload?.error||'Not found.';cf.className='fb err'}
+  }catch{cf.textContent='Network error.';cf.className='fb err'}
+});
+</script>
+</body>
+</html>

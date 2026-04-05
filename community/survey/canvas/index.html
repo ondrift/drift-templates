@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Feedback Survey</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #f7f8fc;
+      --white:    #ffffff;
+      --dark:     #1a1a2e;
+      --muted:    #6b7280;
+      --primary:  #4f46e5;
+      --primary-h:#4338ca;
+      --success:  #059669;
+      --success-bg:#ecfdf5;
+      --error:    #dc2626;
+      --error-bg: #fef2f2;
+      --border:   #e5e7eb;
+      --rating:   #f59e0b;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--dark); line-height: 1.6; min-height: 100vh; }
+
+    .container { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+    /* Header */
+    .survey-header { text-align: center; margin-bottom: 2.5rem; padding-top: 1rem; }
+    .survey-header h1 { font-size: 1.75rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem; }
+    .survey-header p { color: var(--muted); font-size: 0.95rem; max-width: 420px; margin: 0 auto; }
+
+    /* Card */
+    .card { background: var(--white); border-radius: 12px; padding: 1.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04); margin-bottom: 1rem; }
+
+    /* Form elements */
+    label { display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+    input[type="email"] {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 0.7rem 0.9rem; font-size: 0.95rem; font-family: inherit;
+      color: var(--dark); background: var(--bg); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input[type="email"]:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+
+    /* Question */
+    .question { margin-bottom: 1.5rem; }
+    .question:last-child { margin-bottom: 0; }
+    .q-text { font-size: 1rem; font-weight: 600; color: var(--dark); margin-bottom: 0.75rem; }
+    .q-num { display: inline-block; background: var(--primary); color: #fff; font-size: 0.7rem; font-weight: 700; width: 1.4rem; height: 1.4rem; line-height: 1.4rem; text-align: center; border-radius: 50%; margin-right: 0.5rem; vertical-align: middle; }
+
+    /* Rating */
+    .rating-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .rating-btn {
+      width: 2.5rem; height: 2.5rem; border-radius: 8px; border: 1.5px solid var(--border);
+      background: var(--white); color: var(--dark); font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center;
+    }
+    .rating-btn:hover { border-color: var(--rating); color: var(--rating); }
+    .rating-btn.selected { background: var(--rating); border-color: var(--rating); color: #fff; }
+
+    /* Choice (radio) */
+    .choice-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .choice-item {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.6rem 0.85rem; border: 1.5px solid var(--border); border-radius: 8px;
+      cursor: pointer; transition: all 0.15s; background: var(--white);
+    }
+    .choice-item:hover { border-color: var(--primary); }
+    .choice-item.selected { border-color: var(--primary); background: rgba(79,70,229,0.04); }
+    .choice-item input[type="radio"] { accent-color: var(--primary); width: 1rem; height: 1rem; margin: 0; cursor: pointer; }
+    .choice-item span { font-size: 0.93rem; color: var(--dark); }
+
+    /* Textarea */
+    textarea {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 0.7rem 0.9rem; font-size: 0.93rem; font-family: inherit;
+      color: var(--dark); background: var(--bg); outline: none;
+      resize: vertical; min-height: 80px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+
+    /* Submit */
+    .submit-btn {
+      width: 100%; padding: 0.85rem; border: none; border-radius: 8px;
+      background: var(--primary); color: #fff; font-size: 0.95rem; font-weight: 600;
+      font-family: inherit; cursor: pointer; transition: background 0.2s, transform 0.1s;
+      margin-top: 0.5rem;
+    }
+    .submit-btn:hover { background: var(--primary-h); }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled { background: #9ca3af; cursor: not-allowed; transform: none; }
+
+    /* Feedback */
+    .feedback {
+      padding: 0.9rem 1.1rem; border-radius: 8px; font-size: 0.9rem;
+      margin-top: 1rem; display: none;
+    }
+    .feedback.success { background: var(--success-bg); color: var(--success); border: 1px solid #a7f3d0; display: block; }
+    .feedback.error { background: var(--error-bg); color: var(--error); border: 1px solid #fecaca; display: block; }
+
+    /* Thank you state */
+    .thank-you { text-align: center; padding: 3rem 1.5rem; }
+    .thank-you h2 { font-size: 1.5rem; color: var(--dark); margin-bottom: 0.5rem; }
+    .thank-you p { color: var(--muted); font-size: 0.95rem; }
+    .thank-you .count { display: inline-block; margin-top: 1rem; background: var(--primary); color: #fff; padding: 0.4rem 1rem; border-radius: 100px; font-size: 0.85rem; font-weight: 600; }
+
+    /* Loading */
+    .loading { text-align: center; color: var(--muted); padding: 3rem 0; font-size: 0.95rem; }
+
+    /* Footer */
+    footer { text-align: center; padding: 1.5rem; color: var(--muted); font-size: 0.8rem; }
+    footer a { color: var(--primary); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .container { padding: 1.25rem 1rem 3rem; }
+      .card { padding: 1.25rem; }
+      .rating-btn { width: 2.2rem; height: 2.2rem; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="survey-header">
+    <h1 id="survey-title">Loading survey...</h1>
+    <p id="survey-desc"></p>
+  </div>
+
+  <div id="survey-form-wrapper">
+    <!-- Email card -->
+    <div class="card" id="email-card">
+      <label for="respondent-email">Your email</label>
+      <input type="email" id="respondent-email" placeholder="you@example.com" required />
+    </div>
+
+    <!-- Questions rendered here -->
+    <div id="questions-container">
+      <p class="loading" id="loading-msg">Loading questions...</p>
+    </div>
+
+    <!-- Submit -->
+    <div class="card" id="submit-card" style="display:none">
+      <button class="submit-btn" id="submit-btn" type="button">Submit feedback</button>
+      <div id="feedback" class="feedback"></div>
+    </div>
+  </div>
+
+  <!-- Thank you (hidden by default) -->
+  <div id="thank-you" class="card thank-you" style="display:none">
+    <h2>Thank you!</h2>
+    <p>Your feedback has been recorded. We appreciate you taking the time.</p>
+    <div class="count" id="resp-count"></div>
+  </div>
+</div>
+
+<footer>
+  Powered by <a href="#">Drift</a>
+</footer>
+
+<script>
+const state = { questions: [], answers: {} };
+
+function renderRating(q) {
+  const btns = q.options.map(o =>
+    `<button class="rating-btn" data-qid="${q.id}" data-val="${o}">${o}</button>`
+  ).join('');
+  return `<div class="rating-row">${btns}</div>`;
+}
+
+function renderChoice(q) {
+  const name = `choice-${q.id}`;
+  const items = q.options.map(o =>
+    `<label class="choice-item" data-qid="${q.id}" data-val="${o}">
+      <input type="radio" name="${name}" value="${o}" />
+      <span>${o}</span>
+    </label>`
+  ).join('');
+  return `<div class="choice-list">${items}</div>`;
+}
+
+function renderText(q) {
+  return `<textarea data-qid="${q.id}" placeholder="Type your answer here..."></textarea>`;
+}
+
+function renderQuestion(q, idx) {
+  let input = '';
+  if (q.type === 'rating') input = renderRating(q);
+  else if (q.type === 'choice') input = renderChoice(q);
+  else input = renderText(q);
+
+  return `<div class="card"><div class="question">
+    <div class="q-text"><span class="q-num">${idx + 1}</span>${q.text}</div>
+    ${input}
+  </div></div>`;
+}
+
+// Bind interactive handlers
+function bind() {
+  // Rating buttons
+  document.querySelectorAll('.rating-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const qid = btn.dataset.qid;
+      btn.parentElement.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      state.answers[qid] = btn.dataset.val;
+    });
+  });
+
+  // Choice radio items
+  document.querySelectorAll('.choice-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const qid = item.dataset.qid;
+      item.closest('.choice-list').querySelectorAll('.choice-item').forEach(c => c.classList.remove('selected'));
+      item.classList.add('selected');
+      item.querySelector('input[type="radio"]').checked = true;
+      state.answers[qid] = item.dataset.val;
+    });
+  });
+
+  // Text areas
+  document.querySelectorAll('textarea[data-qid]').forEach(ta => {
+    ta.addEventListener('input', () => {
+      state.answers[ta.dataset.qid] = ta.value.trim();
+    });
+  });
+}
+
+// Load survey
+(async () => {
+  const container = document.getElementById('questions-container');
+  try {
+    const res = await fetch('/api/get-survey');
+    const data = await res.json();
+    const survey = data?.payload ?? data;
+
+    document.getElementById('survey-title').textContent = survey.title || 'Survey';
+    document.getElementById('survey-desc').textContent = survey.description || '';
+
+    const questions = survey.questions ?? [];
+    if (!questions.length) {
+      document.getElementById('loading-msg').textContent = 'No questions available.';
+      return;
+    }
+
+    state.questions = questions;
+    container.innerHTML = questions.map(renderQuestion).join('');
+    document.getElementById('submit-card').style.display = '';
+    bind();
+  } catch {
+    document.getElementById('loading-msg').textContent = 'Could not load survey. Please try again later.';
+  }
+})();
+
+// Submit
+document.getElementById('submit-btn').addEventListener('click', async () => {
+  const email = document.getElementById('respondent-email').value.trim();
+  const fb = document.getElementById('feedback');
+  const btn = document.getElementById('submit-btn');
+
+  if (!email || !email.includes('@')) {
+    fb.textContent = 'Please enter a valid email address.';
+    fb.className = 'feedback error';
+    return;
+  }
+
+  // Build answers array (only non-empty)
+  const answers = state.questions
+    .map(q => ({ question_id: q.id, value: state.answers[q.id] || '' }))
+    .filter(a => a.value !== '');
+
+  if (answers.length === 0) {
+    fb.textContent = 'Please answer at least one question.';
+    fb.className = 'feedback error';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  fb.className = 'feedback';
+
+  try {
+    const res = await fetch('/api/submit-response', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ respondent_email: email, answers }),
+    });
+    const data = await res.json();
+    const payload = data?.payload ?? data;
+
+    if (res.ok) {
+      document.getElementById('survey-form-wrapper').style.display = 'none';
+      const ty = document.getElementById('thank-you');
+      ty.style.display = '';
+      const count = payload.total_count ?? 0;
+      document.getElementById('resp-count').textContent = count + (count === 1 ? ' response so far' : ' responses so far');
+    } else if (res.status === 409) {
+      fb.textContent = payload.error || 'You have already submitted a response.';
+      fb.className = 'feedback error';
+    } else {
+      fb.textContent = payload.error || 'Something went wrong. Please try again.';
+      fb.className = 'feedback error';
+    }
+  } catch {
+    fb.textContent = 'Could not reach the server. Please try again later.';
+    fb.className = 'feedback error';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit feedback';
+  }
+});
+</script>
+</body>
+</html>

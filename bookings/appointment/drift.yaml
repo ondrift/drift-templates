@@ -1,0 +1,20 @@
+name: my-bookings
+atomic:
+  - dir: ./atomic/book-slot
+  - dir: ./atomic/get-slots
+  - dir: ./atomic/cancel-booking
+  - dir: ./atomic/confirm-booking
+backbone:
+  nosql:
+    - collection: bookings
+  queues:
+    - name: booking-queue
+  secrets:
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+    - key: BUSINESS_NAME
+      value: "My Business"
+canvas:
+  - dir: ./canvas

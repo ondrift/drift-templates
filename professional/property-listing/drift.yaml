@@ -1,0 +1,26 @@
+name: my-listings
+atomic:
+  - dir: ./atomic/get-listings
+  - dir: ./atomic/inquiry
+  - dir: ./atomic/rsvp-open-house
+  - dir: ./atomic/notify-agent
+backbone:
+  cache:
+    - key: listings
+      file: ./backbone/listings.json
+  nosql:
+    - collection: inquiries
+    - collection: rsvps
+  queues:
+    - name: agent-queue
+  secrets:
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+    - key: AGENT_NAME
+      value: "Jane Smith"
+    - key: AGENT_EMAIL
+      env: AGENT_EMAIL
+canvas:
+  - dir: ./canvas

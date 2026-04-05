@@ -1,0 +1,36 @@
+{
+  "title": "Customer Feedback Survey",
+  "description": "Help us improve — takes less than 2 minutes.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "How satisfied are you with our service?",
+      "type": "rating",
+      "options": ["1", "2", "3", "4", "5"]
+    },
+    {
+      "id": "q2",
+      "text": "What do you like most about our product?",
+      "type": "choice",
+      "options": ["Ease of use", "Performance", "Price", "Support", "Features"]
+    },
+    {
+      "id": "q3",
+      "text": "What could we improve?",
+      "type": "text",
+      "options": []
+    },
+    {
+      "id": "q4",
+      "text": "How likely are you to recommend us to a friend?",
+      "type": "rating",
+      "options": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+    },
+    {
+      "id": "q5",
+      "text": "Any additional comments?",
+      "type": "text",
+      "options": []
+    }
+  ]
+}

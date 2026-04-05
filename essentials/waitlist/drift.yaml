@@ -1,0 +1,16 @@
+name: my-waitlist
+atomic:
+  - dir: ./atomic/signup
+  - dir: ./atomic/check-position
+backbone:
+  nosql:
+    - collection: signups
+  secrets:
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+    - key: PRODUCT_NAME
+      value: "My Product"
+canvas:
+  - dir: ./canvas

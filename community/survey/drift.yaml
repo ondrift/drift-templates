@@ -1,0 +1,13 @@
+name: my-survey
+atomic:
+  - dir: ./atomic/get-survey
+  - dir: ./atomic/submit-response
+  - dir: ./atomic/get-results
+backbone:
+  cache:
+    - key: survey-definition
+      file: ./backbone/survey.json
+  nosql:
+    - collection: responses
+canvas:
+  - dir: ./canvas

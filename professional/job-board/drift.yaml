@@ -1,0 +1,24 @@
+name: my-careers
+atomic:
+  - dir: ./atomic/get-positions
+  - dir: ./atomic/apply
+  - dir: ./atomic/notify-hiring
+backbone:
+  cache:
+    - key: positions
+      file: ./backbone/positions.json
+  nosql:
+    - collection: applications
+  queues:
+    - name: hiring-queue
+  secrets:
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+    - key: COMPANY_NAME
+      value: "My Company"
+    - key: HIRING_EMAIL
+      env: HIRING_EMAIL
+canvas:
+  - dir: ./canvas

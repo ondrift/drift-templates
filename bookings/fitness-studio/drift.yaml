@@ -1,0 +1,23 @@
+name: my-studio
+atomic:
+  - dir: ./atomic/get-classes
+  - dir: ./atomic/book-class
+  - dir: ./atomic/cancel-booking
+  - dir: ./atomic/confirm-class
+backbone:
+  cache:
+    - key: class-schedule
+      file: ./backbone/schedule.json
+  nosql:
+    - collection: bookings
+  queues:
+    - name: class-queue
+  secrets:
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+    - key: STUDIO_NAME
+      value: "My Studio"
+canvas:
+  - dir: ./canvas

@@ -1,0 +1,18 @@
+name: my-business
+atomic:
+  - dir: ./atomic/contact
+  - dir: ./atomic/notify-contact
+backbone:
+  nosql:
+    - collection: leads
+  queues:
+    - name: contact-queue
+  secrets:
+    - key: RESEND_API_KEY
+      env: RESEND_API_KEY
+    - key: SENDER_EMAIL
+      env: SENDER_EMAIL
+    - key: OWNER_EMAIL
+      env: OWNER_EMAIL
+canvas:
+  - dir: ./canvas

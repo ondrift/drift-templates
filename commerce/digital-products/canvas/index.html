@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Digital Store</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fafafa;
+      --bg-2: #ffffff;
+      --text: #111827;
+      --text-2: #6b7280;
+      --accent: #4f46e5;
+      --accent-h: #4338ca;
+      --border: #e5e7eb;
+      --success-bg: #f0fdf4;
+      --success-text: #166534;
+      --success-border: #bbf7d0;
+      --error-bg: #fef2f2;
+      --error-text: #991b1b;
+      --error-border: #fecaca;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --bg-2: #1e293b;
+        --text: #f1f5f9;
+        --text-2: #94a3b8;
+        --border: #334155;
+        --success-bg: #052e16;
+        --success-text: #86efac;
+        --success-border: #166534;
+        --error-bg: #450a0a;
+        --error-text: #fca5a5;
+        --error-border: #991b1b;
+        --shadow: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.15);
+        --shadow-lg: 0 10px 30px rgba(0,0,0,0.3);
+      }
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg-2); border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-size: 1.15rem; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
+    .nav-tag { font-size: 0.75rem; color: var(--text-2); }
+
+    /* HERO */
+    .hero {
+      max-width: 640px; margin: 0 auto; padding: 4rem 2rem 2rem; text-align: center;
+    }
+    .hero h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 0.75rem; }
+    .hero p { color: var(--text-2); font-size: 1.05rem; max-width: 480px; margin: 0 auto; }
+
+    /* PRODUCT GRID */
+    .products { max-width: 960px; margin: 0 auto; padding: 2rem; }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    #products-loading { text-align: center; color: var(--text-2); padding: 3rem 0; grid-column: 1 / -1; }
+
+    /* CARD */
+    .card {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;
+      box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+    .card-format {
+      display: inline-block; align-self: flex-start;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent); background: rgba(79,70,229,0.08); padding: 0.2rem 0.6rem; border-radius: 100px;
+    }
+    .card h3 { font-size: 1.15rem; font-weight: 700; line-height: 1.3; }
+    .card .desc { font-size: 0.88rem; color: var(--text-2); line-height: 1.55; flex: 1; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.25rem; }
+    .card-price { font-size: 1.25rem; font-weight: 800; color: var(--accent); }
+    .btn {
+      background: var(--accent); color: #fff; border: none; border-radius: 8px;
+      padding: 0.55rem 1.3rem; font-size: 0.8rem; font-weight: 700; cursor: pointer;
+      transition: background 0.15s, transform 0.1s; letter-spacing: 0.01em;
+    }
+    .btn:hover { background: var(--accent-h); transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* MODAL */
+    .overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+    .overlay.open { display: flex; }
+    .modal {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+      width: 100%; max-width: 420px; padding: 2rem; position: relative;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .modal .subtitle { font-size: 0.85rem; color: var(--text-2); margin-bottom: 1.5rem; }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-2);
+      line-height: 1; padding: 0.25rem;
+    }
+    .modal-close:hover { color: var(--text); }
+
+    .field { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1rem; }
+    .field label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-2); }
+    .field input {
+      border: 1.5px solid var(--border); border-radius: 8px; padding: 0.65rem 0.85rem;
+      font-size: 0.95rem; background: var(--bg); color: var(--text); outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,70,229,0.12); }
+    .field input[readonly] { opacity: 0.6; cursor: not-allowed; }
+
+    .modal .btn { width: 100%; padding: 0.75rem; font-size: 0.88rem; margin-top: 0.5rem; }
+
+    .feedback {
+      margin-top: 1rem; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; display: none;
+    }
+    .feedback.success { background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); display: block; }
+    .feedback.error { background: var(--error-bg); color: var(--error-text); border: 1px solid var(--error-border); display: block; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 3rem 2rem 2rem; color: var(--text-2); font-size: 0.82rem; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">My Digital Store</span>
+  <span class="nav-tag">Digital Products</span>
+</nav>
+
+<div class="hero">
+  <h1>Learn, build, ship.</h1>
+  <p>Ebooks, courses, and templates to help you go from idea to production.</p>
+</div>
+
+<section class="products">
+  <div class="products-grid" id="products-grid">
+    <p id="products-loading">Loading products...</p>
+  </div>
+</section>
+
+<!-- Purchase modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+    <h2 id="modal-title">Purchase</h2>
+    <p class="subtitle" id="modal-subtitle"></p>
+    <form id="purchase-form" novalidate>
+      <input type="hidden" id="f-product-id" />
+      <div class="field">
+        <label for="f-product">Product</label>
+        <input type="text" id="f-product" readonly />
+      </div>
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input type="text" id="f-name" placeholder="Jane Smith" required />
+      </div>
+      <div class="field">
+        <label for="f-email">Email address</label>
+        <input type="email" id="f-email" placeholder="jane@example.com" required />
+      </div>
+      <button type="submit" class="btn" id="purchase-btn">Complete purchase</button>
+    </form>
+    <div id="purchase-feedback" class="feedback"></div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2026 My Digital Store &middot; Powered by Drift
+</footer>
+
+<script>
+// --- Products ---
+const FORMAT_ICON = { PDF: '📄', Video: '🎬', ZIP: '📦' };
+
+function productCard(p) {
+  const icon = FORMAT_ICON[p.format] || '📁';
+  return `
+    <div class="card">
+      <span class="card-format">${icon} ${p.format || 'Digital'}</span>
+      <h3>${p.name}</h3>
+      <p class="desc">${p.description}</p>
+      <div class="card-footer">
+        <span class="card-price">$${Number(p.price).toFixed(2)}</span>
+        <button class="btn" onclick="openPurchase('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})">Buy</button>
+      </div>
+    </div>`;
+}
+
+(async () => {
+  const grid = document.getElementById('products-grid');
+  try {
+    const data = await fetch('/api/get-products').then(r => r.json());
+    const products = data?.payload?.products ?? [];
+    if (!products.length) { document.getElementById('products-loading').textContent = 'No products available right now.'; return; }
+    grid.innerHTML = products.map(productCard).join('');
+  } catch {
+    document.getElementById('products-loading').textContent = 'Could not load products.';
+  }
+})();
+
+// --- Modal ---
+const overlay = document.getElementById('overlay');
+const modalClose = document.getElementById('modal-close');
+const form = document.getElementById('purchase-form');
+const fb = document.getElementById('purchase-feedback');
+const submitBtn = document.getElementById('purchase-btn');
+
+function openPurchase(id, name, price) {
+  document.getElementById('f-product-id').value = id;
+  document.getElementById('f-product').value = name;
+  document.getElementById('modal-title').textContent = 'Purchase';
+  document.getElementById('modal-subtitle').textContent = `${name} — $${Number(price).toFixed(2)}`;
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-email').value = '';
+  fb.className = 'feedback';
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Complete purchase';
+  overlay.classList.add('open');
+}
+
+modalClose.addEventListener('click', () => overlay.classList.remove('open'));
+overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const product_id = document.getElementById('f-product-id').value;
+  const name = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+
+  if (!name || !email) {
+    fb.textContent = 'Please fill in all fields.';
+    fb.className = 'feedback error';
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Processing...';
+  fb.className = 'feedback';
+
+  try {
+    const res = await fetch('/api/purchase', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product_id, name, email }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      fb.textContent = data.payload?.message ?? 'Purchase confirmed! Check your email for the download link.';
+      fb.className = 'feedback success';
+      form.reset();
+    } else {
+      fb.textContent = data.payload?.error ?? 'Something went wrong. Please try again.';
+      fb.className = 'feedback error';
+    }
+  } catch {
+    fb.textContent = 'Could not reach the server. Please try again later.';
+    fb.className = 'feedback error';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Complete purchase';
+  }
+});
+</script>
+</body>
+</html>
