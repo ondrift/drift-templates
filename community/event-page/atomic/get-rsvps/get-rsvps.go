@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"drift-sdk"
+	drift "github.com/ondrift/drift-sdk"
 )
 
 // GetGetRsvps returns the total RSVP and guest count.

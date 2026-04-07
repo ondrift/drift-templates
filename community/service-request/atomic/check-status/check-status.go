@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"drift-sdk"
+	drift "github.com/ondrift/drift-sdk"
 )
 
 func GetCheckStatus() (int, string, interface{}) {

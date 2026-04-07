@@ -13,7 +13,7 @@ import (
 	"net/http"
 	"os"
 
-	"drift-sdk"
+	drift "github.com/ondrift/drift-sdk"
 )
 
 // slot definitions — owner can update these to match their actual schedule

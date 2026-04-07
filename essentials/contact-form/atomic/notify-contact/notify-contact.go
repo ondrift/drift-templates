@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"drift-sdk"
+	drift "github.com/ondrift/drift-sdk"
 )
 
 type RequestBody struct {

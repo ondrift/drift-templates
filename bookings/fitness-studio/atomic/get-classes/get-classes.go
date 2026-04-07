@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"time"
 
-	"drift-sdk"
+	drift "github.com/ondrift/drift-sdk"
 )
 
 type classInfo struct {

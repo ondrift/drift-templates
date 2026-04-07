@@ -25,7 +25,7 @@ import (
 	"strings"
 	"time"
 
-	"drift-sdk"
+	drift "github.com/ondrift/drift-sdk"
 )
 
 type RequestBody struct {

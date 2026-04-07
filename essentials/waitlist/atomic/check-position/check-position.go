@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"drift-sdk"
+	drift "github.com/ondrift/drift-sdk"
 )
 
 func GetCheckPosition() (int, string, interface{}) {

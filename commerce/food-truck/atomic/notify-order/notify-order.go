@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"strings"
 
-	"drift-sdk"
+	drift "github.com/ondrift/drift-sdk"
 )
 
 type OrderItem struct {

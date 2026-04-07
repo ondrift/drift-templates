@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strings"
 
-	"drift-sdk"
+	drift "github.com/ondrift/drift-sdk"
 )
 
 type RequestBody struct {

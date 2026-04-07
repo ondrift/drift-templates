@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"drift-sdk"
+	drift "github.com/ondrift/drift-sdk"
 )
 
 type Answer struct {

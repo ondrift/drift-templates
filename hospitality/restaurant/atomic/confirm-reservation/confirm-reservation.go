@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"drift-sdk"
+	drift "github.com/ondrift/drift-sdk"
 )
 
-// RequestBody is the message popped from reservation-queue by the trigger.
+// RequestBody is the message popped from reservhoation-queue by the trigger.
 type RequestBody struct {
 	Name        string `json:"name"`
 	Email       string `json:"email"`

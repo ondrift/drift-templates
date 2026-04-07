@@ -20,7 +20,7 @@ import (
 	"net/http"
 	"strings"
 
-	"drift-sdk"
+	drift "github.com/ondrift/drift-sdk"
 )
 
 const cartTTL = 604800 // 7 days in seconds
