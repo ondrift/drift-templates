@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 
 	drift "github.com/ondrift/drift-sdk"
 )
@@ -26,17 +27,17 @@ func PostConfirmReservation(req RequestBody) (int, string, interface{}) {
 		return http.StatusBadRequest, "Bad Request", map[string]string{"error": "email required"}
 	}
 
-	apiKey := drift.Env("RESEND_API_KEY")
+	apiKey := os.Getenv("RESEND_API_KEY")
 	if apiKey == "" {
 		drift.Log(fmt.Sprintf("[confirm-reservation] no RESEND_API_KEY — skipping email for %s", req.Email))
 		return http.StatusOK, "Skipped", map[string]string{"reason": "no email key configured"}
 	}
 
-	senderEmail := drift.Env("SENDER_EMAIL")
+	senderEmail := os.Getenv("SENDER_EMAIL")
 	if senderEmail == "" {
 		senderEmail = "reservations@yourdomain.com"
 	}
-	restaurantName := drift.Env("RESTAURANT_NAME")
+	restaurantName := os.Getenv("RESTAURANT_NAME")
 	if restaurantName == "" {
 		restaurantName = "Our Restaurant"
 	}
