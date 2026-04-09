@@ -3,7 +3,7 @@ atomic:
   - dir: ./atomic/get-products
   - dir: ./atomic/cart
   - dir: ./atomic/checkout
-  - dir: ./atomic/order-confirm
+  # - dir: ./atomic/order-confirm
 backbone:
   cache:
     - key: products:catalogue
