@@ -37,7 +37,7 @@ func PostSubmitResponse(req RequestBody) (int, string, interface{}) {
 	}
 
 	// Check for duplicate submission.
-	existing, err := drift.CacheGet("survey:resp:" + email)
+	existing, err := drift.Cache.Get("survey:resp:" + email)
 	if err == nil && len(existing) > 0 {
 		return http.StatusConflict, "Conflict", map[string]string{
 			"error": "you have already submitted a response",
@@ -63,23 +63,23 @@ func PostSubmitResponse(req RequestBody) (int, string, interface{}) {
 		"answers":          answers,
 		"submitted_at":     time.Now().UTC().Format(time.RFC3339),
 	}
-	if _, err := drift.BackboneWrite("responses", doc); err != nil {
+	if _, err := drift.NoSQL.Collection("responses").Insert(doc); err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save response",
 		}
 	}
 
 	// Mark as submitted in cache to prevent duplicates.
-	_ = drift.CacheSet("survey:resp:"+email, []byte("1"), 0)
+	_ = drift.Cache.Set("survey:resp:"+email, []byte("1"), 0)
 
 	// Update response count in cache.
-	countRaw, err := drift.CacheGet("survey:count")
+	countRaw, err := drift.Cache.Get("survey:count")
 	count := 0
 	if err == nil && len(countRaw) > 0 {
 		count, _ = strconv.Atoi(string(countRaw))
 	}
 	count++
-	_ = drift.CacheSet("survey:count", []byte(strconv.Itoa(count)), 0)
+	_ = drift.Cache.Set("survey:count", []byte(strconv.Itoa(count)), 0)
 
 	drift.Log(fmt.Sprintf("[submit-response] response %s saved from %s (total: %d)", responseID, email, count))
 

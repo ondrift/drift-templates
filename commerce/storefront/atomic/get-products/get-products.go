@@ -15,7 +15,7 @@ import (
 
 func GetGetProducts() (int, string, interface{}) {
 	// ── Load catalogue index ──────────────────────────────────────────────────
-	idxRaw, err := drift.CacheGet("products:catalogue")
+	idxRaw, err := drift.Cache.Get("products:catalogue")
 	if err != nil || len(idxRaw) == 0 {
 		return http.StatusOK, "OK", map[string]any{
 			"items": []any{},
@@ -36,7 +36,7 @@ func GetGetProducts() (int, string, interface{}) {
 		if !ok {
 			continue
 		}
-		pRaw, err := drift.CacheGet(fmt.Sprintf("products:%s", id))
+		pRaw, err := drift.Cache.Get(fmt.Sprintf("products:%s", id))
 		if err != nil || len(pRaw) == 0 {
 			continue
 		}

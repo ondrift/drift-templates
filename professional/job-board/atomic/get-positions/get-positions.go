@@ -15,7 +15,7 @@ import (
 )
 
 func GetGetPositions() (int, string, interface{}) {
-	raw, err := drift.CacheGet("positions")
+	raw, err := drift.Cache.Get("positions")
 	if err != nil || len(raw) == 0 {
 		return http.StatusOK, "OK", defaultPositions()
 	}

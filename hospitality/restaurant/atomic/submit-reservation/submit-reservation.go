@@ -47,7 +47,7 @@ func PostSubmitReservation(req RequestBody) (int, string, interface{}) {
 		"status":       "pending",
 		"created_at":   time.Now().UTC().Format(time.RFC3339),
 	}
-	_, err := drift.BackboneWrite("reservations", doc)
+	_, err := drift.NoSQL.Collection("reservations").Insert(doc)
 	if err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save reservation",
@@ -55,7 +55,7 @@ func PostSubmitReservation(req RequestBody) (int, string, interface{}) {
 	}
 
 	// Enqueue confirmation email.
-	_ = drift.QueuePush("reservation-queue", map[string]any{
+	_ = drift.Queue("reservation-queue").Push(map[string]any{
 		"name":         req.Name,
 		"email":        req.Email,
 		"date":         req.Date,

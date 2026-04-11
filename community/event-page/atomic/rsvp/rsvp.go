@@ -41,7 +41,7 @@ func PostRsvp(req RequestBody) (int, string, interface{}) {
 		"guests":  req.Guests,
 		"rsvp_at": time.Now().UTC().Format(time.RFC3339),
 	}
-	if _, err := drift.BackboneWrite("rsvps", doc); err != nil {
+	if _, err := drift.NoSQL.Collection("rsvps").Insert(doc); err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save RSVP",
 		}

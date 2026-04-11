@@ -17,7 +17,7 @@ func GetCheckStatus() (int, string, interface{}) {
 		}
 	}
 
-	raw, err := drift.CacheGet("ticket:" + ticket)
+	raw, err := drift.Cache.Get("ticket:" + ticket)
 	if err != nil || len(raw) == 0 {
 		return http.StatusNotFound, "Not Found", map[string]string{
 			"error": "Ticket not found",

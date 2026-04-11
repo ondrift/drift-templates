@@ -39,14 +39,14 @@ func PostApply(req RequestBody) (int, string, interface{}) {
 		"applied_at":   time.Now().UTC().Format(time.RFC3339),
 		"status":       "received",
 	}
-	_, err := drift.BackboneWrite("applications", doc)
+	_, err := drift.NoSQL.Collection("applications").Insert(doc)
 	if err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save application",
 		}
 	}
 
-	_ = drift.QueuePush("hiring-queue", map[string]any{
+	_ = drift.Queue("hiring-queue").Push(map[string]any{
 		"application_id": applicationID,
 		"position_id":    req.PositionID,
 		"name":           req.Name,

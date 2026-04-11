@@ -15,7 +15,7 @@ import (
 // GetGetRsvps returns the total RSVP and guest count.
 // The runner proxy has already verified the API key before this is called.
 func GetGetRsvps() (int, string, interface{}) {
-	raw, err := drift.CacheGet("rsvp:stats")
+	raw, err := drift.Cache.Get("rsvp:stats")
 	if err == nil && len(raw) > 0 {
 		var payload map[string]any
 		if json.Unmarshal(raw, &payload) == nil {

@@ -15,7 +15,7 @@ import (
 )
 
 func GetGetProjects() (int, string, interface{}) {
-	raw, err := drift.CacheGet("projects")
+	raw, err := drift.Cache.Get("projects")
 	if err != nil || len(raw) == 0 {
 		return http.StatusOK, "OK", defaultProjects()
 	}

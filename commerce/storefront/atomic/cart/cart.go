@@ -97,7 +97,7 @@ func PostCart(req RequestBody) (int, string, interface{}) {
 }
 
 func loadCart(key string) []CartItem {
-	raw, err := drift.CacheGet(key)
+	raw, err := drift.Cache.Get(key)
 	if err != nil || len(raw) == 0 {
 		return []CartItem{}
 	}
@@ -110,5 +110,5 @@ func loadCart(key string) []CartItem {
 
 func saveCart(key string, cart []CartItem) {
 	cartJSON, _ := json.Marshal(cart)
-	drift.CacheSet(key, string(cartJSON), cartTTL)
+	drift.Cache.Set(key, string(cartJSON), cartTTL)
 }

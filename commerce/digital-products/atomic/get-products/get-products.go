@@ -15,7 +15,7 @@ import (
 )
 
 func GetGetProducts() (int, string, interface{}) {
-	raw, err := drift.CacheGet("digital-catalogue")
+	raw, err := drift.Cache.Get("digital-catalogue")
 	if err != nil || len(raw) == 0 {
 		return http.StatusOK, "OK", defaultCatalogue()
 	}

@@ -30,9 +30,9 @@ type RequestBody struct {
 }
 
 func PostOrderConfirm(req RequestBody) (int, string, interface{}) {
-	apiKey, _ := drift.SecretGet("RESEND_API_KEY")
-	sender, _ := drift.SecretGet("SENDER_EMAIL")
-	store, _ := drift.SecretGet("STORE_NAME")
+	apiKey, _ := drift.Secret.Get("RESEND_API_KEY")
+	sender, _ := drift.Secret.Get("SENDER_EMAIL")
+	store, _ := drift.Secret.Get("STORE_NAME")
 	if store == "" {
 		store = "Our store"
 	}

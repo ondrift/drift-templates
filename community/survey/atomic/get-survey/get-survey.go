@@ -15,7 +15,7 @@ import (
 )
 
 func GetGetSurvey() (int, string, interface{}) {
-	raw, err := drift.CacheGet("survey-definition")
+	raw, err := drift.Cache.Get("survey-definition")
 	if err != nil || len(raw) == 0 {
 		return http.StatusOK, "OK", defaultSurvey()
 	}

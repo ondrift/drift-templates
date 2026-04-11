@@ -26,7 +26,7 @@ func PostRequestAppointment(req RequestBody) (int, string, interface{}) {
 	}
 
 	// Look up patient by email from cache — must exist.
-	patientID, err := drift.CacheGet("patient:" + req.PatientEmail)
+	patientID, err := drift.Cache.Get("patient:" + req.PatientEmail)
 	if err != nil || len(patientID) == 0 {
 		return http.StatusBadRequest, "Bad Request", map[string]string{
 			"error": "no patient record found for this email — please complete the intake form first",
@@ -46,7 +46,7 @@ func PostRequestAppointment(req RequestBody) (int, string, interface{}) {
 		"status":           "requested",
 		"requested_at":     time.Now().UTC().Format(time.RFC3339),
 	}
-	_, err = drift.BackboneWrite("appointments", doc)
+	_, err = drift.NoSQL.Collection("appointments").Insert(doc)
 	if err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save appointment request",
@@ -54,7 +54,7 @@ func PostRequestAppointment(req RequestBody) (int, string, interface{}) {
 	}
 
 	// Enqueue staff notification.
-	_ = drift.QueuePush("staff-queue", map[string]any{
+	_ = drift.Queue("staff-queue").Push(map[string]any{
 		"appointment_id":   appointmentID,
 		"patient_email":    req.PatientEmail,
 		"preferred_date":   req.PreferredDate,

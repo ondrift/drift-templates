@@ -41,7 +41,7 @@ func GetGetSlots() (int, string, interface{}) {
 	available := []string{}
 	for _, slot := range allSlots {
 		lockKey := fmt.Sprintf("slot:%s:%s", date, slot)
-		raw, err := drift.CacheGet(lockKey)
+		raw, err := drift.Cache.Get(lockKey)
 		if err != nil || len(raw) == 0 {
 			available = append(available, slot)
 		}

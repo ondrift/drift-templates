@@ -34,7 +34,7 @@ func PostCancelBooking(req RequestBody) (int, string, interface{}) {
 	}
 
 	// Look up booking from cache.
-	raw, err := drift.CacheGet("booking:" + req.BookingID)
+	raw, err := drift.Cache.Get("booking:" + req.BookingID)
 	if err != nil || len(raw) == 0 {
 		return http.StatusNotFound, "Not Found", map[string]string{
 			"error": "booking not found",
@@ -64,7 +64,7 @@ func PostCancelBooking(req RequestBody) (int, string, interface{}) {
 	// Decrement class spot count.
 	countKey := "class:" + bk.ClassID + ":" + bk.Date + ":count"
 	currentCount := 0
-	countRaw, err := drift.CacheGet(countKey)
+	countRaw, err := drift.Cache.Get(countKey)
 	if err == nil && len(countRaw) > 0 {
 		currentCount, _ = strconv.Atoi(string(countRaw))
 	}
@@ -72,7 +72,7 @@ func PostCancelBooking(req RequestBody) (int, string, interface{}) {
 	if newCount < 0 {
 		newCount = 0
 	}
-	_ = drift.CacheSet(countKey, []byte(strconv.Itoa(newCount)), 172800)
+	_ = drift.Cache.Set(countKey, []byte(strconv.Itoa(newCount)), 172800)
 
 	// Write cancellation to NoSQL.
 	cancelDoc := map[string]any{
@@ -84,10 +84,10 @@ func PostCancelBooking(req RequestBody) (int, string, interface{}) {
 		"status":       "cancelled",
 		"cancelled_at": time.Now().UTC().Format(time.RFC3339),
 	}
-	_, _ = drift.BackboneWrite("bookings", cancelDoc)
+	_, _ = drift.NoSQL.Collection("bookings").Insert(cancelDoc)
 
 	// Delete booking from cache.
-	_ = drift.CacheDel("booking:" + req.BookingID)
+	_ = drift.Cache.Del("booking:" + req.BookingID)
 
 	drift.Log(fmt.Sprintf("[cancel-booking] cancelled %s for %s", req.BookingID, bk.Email))
 

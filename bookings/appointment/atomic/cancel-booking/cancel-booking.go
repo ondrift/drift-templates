@@ -31,7 +31,7 @@ func PostCancelBooking(req RequestBody) (int, string, interface{}) {
 
 	// ── Fetch the booking from cache ─────────────────────────────────────────
 	cacheKey := fmt.Sprintf("booking:%s", bookingID)
-	raw, err := drift.CacheGet(cacheKey)
+	raw, err := drift.Cache.Get(cacheKey)
 	if err != nil || len(raw) == 0 {
 		return http.StatusNotFound, "Not found", map[string]string{
 			"error": "Booking not found. It may have expired or the ID is incorrect.",
@@ -57,15 +57,15 @@ func PostCancelBooking(req RequestBody) (int, string, interface{}) {
 
 	// ── Write cancelled record to NoSQL ──────────────────────────────────────
 	booking["status"] = "cancelled"
-	drift.BackboneWrite("bookings", booking)
+	drift.NoSQL.Collection("bookings").Insert(booking)
 
 	// ── Release the slot lock ────────────────────────────────────────────────
 	if date != "" && timeSlot != "" {
-		_ = drift.CacheDel(fmt.Sprintf("slot:%s:%s", date, timeSlot))
+		_ = drift.Cache.Del(fmt.Sprintf("slot:%s:%s", date, timeSlot))
 	}
 
 	// ── Remove booking from cache ─────────────────────────────────────────────
-	_ = drift.CacheDel(cacheKey)
+	_ = drift.Cache.Del(cacheKey)
 
 	return http.StatusOK, "Cancelled", map[string]string{
 		"message": "Your booking has been cancelled. The slot is now available for others.",

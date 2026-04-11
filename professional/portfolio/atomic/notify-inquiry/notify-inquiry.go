@@ -24,20 +24,20 @@ func PostNotifyInquiry(req RequestBody) (int, string, interface{}) {
 		return http.StatusBadRequest, "Bad Request", map[string]string{"error": "email required"}
 	}
 
-	apiKey, _ := drift.SecretGet("RESEND_API_KEY")
+	apiKey, _ := drift.Secret.Get("RESEND_API_KEY")
 	if apiKey == "" {
 		return http.StatusOK, "Skipped", map[string]string{"reason": "no email key configured"}
 	}
 
-	senderEmail, _ := drift.SecretGet("SENDER_EMAIL")
+	senderEmail, _ := drift.Secret.Get("SENDER_EMAIL")
 	if senderEmail == "" {
 		senderEmail = "portfolio@yourdomain.com"
 	}
-	ownerName, _ := drift.SecretGet("OWNER_NAME")
+	ownerName, _ := drift.Secret.Get("OWNER_NAME")
 	if ownerName == "" {
 		ownerName = "Portfolio Owner"
 	}
-	ownerEmail, _ := drift.SecretGet("OWNER_EMAIL")
+	ownerEmail, _ := drift.Secret.Get("OWNER_EMAIL")
 	if ownerEmail == "" {
 		return http.StatusOK, "Skipped", map[string]string{"reason": "no owner email configured"}
 	}

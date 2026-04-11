@@ -51,7 +51,7 @@ func PostSubmitRequest(req RequestBody) (int, string, interface{}) {
 		"status":       "open",
 		"submitted_at": submittedAt,
 	}
-	_, err := drift.BackboneWrite("requests", doc)
+	_, err := drift.NoSQL.Collection("requests").Insert(doc)
 	if err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save request",
@@ -65,10 +65,10 @@ func PostSubmitRequest(req RequestBody) (int, string, interface{}) {
 		"status":       "open",
 		"submitted_at": submittedAt,
 	})
-	_ = drift.CacheSet("ticket:"+ticket, string(statusJSON), 0)
+	_ = drift.Cache.Set("ticket:"+ticket, string(statusJSON), 0)
 
 	// Enqueue department notification.
-	_ = drift.QueuePush("department-queue", map[string]any{
+	_ = drift.Queue("department-queue").Push(map[string]any{
 		"ticket":      ticket,
 		"name":        req.Name,
 		"email":       req.Email,

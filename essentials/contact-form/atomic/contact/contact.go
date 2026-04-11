@@ -45,13 +45,13 @@ func PostContact(req RequestBody) (int, string, interface{}) {
 		"received_at": time.Now().UTC().Format(time.RFC3339),
 		"status":      "new",
 	}
-	if _, err := drift.BackboneWrite("leads", doc); err != nil {
+	if _, err := drift.NoSQL.Collection("leads").Insert(doc); err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "Could not save your message. Please try again.",
 		}
 	}
 
-	_ = drift.QueuePush("contact-queue", map[string]any{
+	_ = drift.Queue("contact-queue").Push(map[string]any{
 		"lead_id": leadID,
 		"name":    name,
 		"email":   email,

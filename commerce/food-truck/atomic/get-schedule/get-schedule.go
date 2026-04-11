@@ -15,7 +15,7 @@ import (
 )
 
 func GetGetSchedule() (int, string, interface{}) {
-	raw, err := drift.CacheGet("truck-schedule")
+	raw, err := drift.Cache.Get("truck-schedule")
 	if err != nil || len(raw) == 0 {
 		return http.StatusOK, "OK", defaultSchedule()
 	}

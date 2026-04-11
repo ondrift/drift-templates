@@ -52,14 +52,14 @@ func PostPreOrder(req RequestBody) (int, string, interface{}) {
 		"status":      "pending",
 		"created_at":  time.Now().UTC().Format(time.RFC3339),
 	}
-	_, err := drift.BackboneWrite("orders", doc)
+	_, err := drift.NoSQL.Collection("orders").Insert(doc)
 	if err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save order",
 		}
 	}
 
-	_ = drift.QueuePush("order-queue", map[string]any{
+	_ = drift.Queue("order-queue").Push(map[string]any{
 		"order_id":    orderID,
 		"name":        req.Name,
 		"email":       req.Email,

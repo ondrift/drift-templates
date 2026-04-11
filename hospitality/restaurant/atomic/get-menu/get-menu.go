@@ -15,7 +15,7 @@ import (
 )
 
 func GetGetMenu() (int, string, interface{}) {
-	raw, err := drift.CacheGet("menu")
+	raw, err := drift.Cache.Get("menu")
 	if err != nil || len(raw) == 0 {
 		return http.StatusOK, "OK", defaultMenu()
 	}

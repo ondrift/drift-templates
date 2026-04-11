@@ -19,7 +19,7 @@ func GetCheckPosition() (int, string, interface{}) {
 		}
 	}
 
-	raw, err := drift.CacheGet("waitlist:" + email)
+	raw, err := drift.Cache.Get("waitlist:" + email)
 	if err != nil || len(raw) == 0 {
 		return http.StatusNotFound, "Not found", map[string]string{
 			"error": "this email is not on the waitlist",
@@ -35,7 +35,7 @@ func GetCheckPosition() (int, string, interface{}) {
 
 	// Read total count from counter.
 	total := 0
-	counterRaw, _ := drift.CacheGet("waitlist:counter")
+	counterRaw, _ := drift.Cache.Get("waitlist:counter")
 	if len(counterRaw) > 0 {
 		total, _ = strconv.Atoi(string(counterRaw))
 	}

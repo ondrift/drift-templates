@@ -13,7 +13,7 @@ import (
 )
 
 func GetGetResults() (int, string, interface{}) {
-	countRaw, err := drift.CacheGet("survey:count")
+	countRaw, err := drift.Cache.Get("survey:count")
 	count := 0
 	if err == nil && len(countRaw) > 0 {
 		count, _ = strconv.Atoi(string(countRaw))

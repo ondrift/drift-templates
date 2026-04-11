@@ -73,17 +73,17 @@ func PostCheckout(req RequestBody) (int, string, interface{}) {
 		"status":     "pending_payment",
 		"created_at": time.Now().UTC().Format(time.RFC3339),
 	}
-	if _, err := drift.BackboneWrite("orders", doc); err != nil {
+	if _, err := drift.NoSQL.Collection("orders").Insert(doc); err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "Could not create order. Please try again.",
 		}
 	}
 
 	// ── Clear cart from cache ─────────────────────────────────────────────────
-	_ = drift.CacheDel(cacheKey)
+	_ = drift.Cache.Del(cacheKey)
 
 	// ── Enqueue for confirmation email ────────────────────────────────────────
-	_ = drift.QueuePush("order-queue", map[string]any{
+	_ = drift.Queue("order-queue").Push(map[string]any{
 		"order_id": orderID,
 		"name":     name,
 		"email":    email,
@@ -98,7 +98,7 @@ func PostCheckout(req RequestBody) (int, string, interface{}) {
 }
 
 func loadCart(key string) []CartItem {
-	raw, err := drift.CacheGet(key)
+	raw, err := drift.Cache.Get(key)
 	if err != nil || len(raw) == 0 {
 		return []CartItem{}
 	}

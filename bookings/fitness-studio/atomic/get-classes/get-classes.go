@@ -30,7 +30,7 @@ type schedule struct {
 }
 
 func GetGetClasses() (int, string, interface{}) {
-	raw, err := drift.CacheGet("class-schedule")
+	raw, err := drift.Cache.Get("class-schedule")
 	if err != nil || len(raw) == 0 {
 		return http.StatusOK, "OK", defaultSchedule()
 	}
@@ -66,7 +66,7 @@ func GetGetClasses() (int, string, interface{}) {
 			}
 			dateStr := day.Format("2006-01-02")
 			spotsUsed := 0
-			countRaw, err := drift.CacheGet("class:" + c.ID + ":" + dateStr + ":count")
+			countRaw, err := drift.Cache.Get("class:" + c.ID + ":" + dateStr + ":count")
 			if err == nil && len(countRaw) > 0 {
 				spotsUsed, _ = strconv.Atoi(string(countRaw))
 			}

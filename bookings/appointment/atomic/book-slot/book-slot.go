@@ -37,7 +37,7 @@ func PostBookSlot(req RequestBody) (int, string, interface{}) {
 
 	// ── Step 1: check whether the slot is already taken ───────────────────────
 	lockKey := fmt.Sprintf("slot:%s:%s", date, timeSlot)
-	raw, err := drift.CacheGet(lockKey)
+	raw, err := drift.Cache.Get(lockKey)
 	if err == nil && len(raw) > 0 {
 		return http.StatusConflict, "Slot taken", map[string]string{
 			"error": fmt.Sprintf("The %s slot on %s is no longer available.", timeSlot, date),
@@ -45,7 +45,7 @@ func PostBookSlot(req RequestBody) (int, string, interface{}) {
 	}
 
 	// ── Step 2: claim the slot in cache (TTL 48 h = 172800 s) ────────────────
-	if err := drift.CacheSet(lockKey, "1", 172800); err != nil {
+	if err := drift.Cache.Set(lockKey, "1", 172800); err != nil {
 		return http.StatusInternalServerError, "Cache error", map[string]string{
 			"error": "Failed to reserve slot. Please try again.",
 		}
@@ -63,7 +63,7 @@ func PostBookSlot(req RequestBody) (int, string, interface{}) {
 		"booked_at": time.Now().UTC().Format(time.RFC3339),
 		"status":    "confirmed",
 	}
-	if _, err := drift.BackboneWrite("bookings", doc); err != nil {
+	if _, err := drift.NoSQL.Collection("bookings").Insert(doc); err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "Could not save booking. Please call us directly.",
 		}
@@ -79,10 +79,10 @@ func PostBookSlot(req RequestBody) (int, string, interface{}) {
 		"service":   service,
 		"status":    "confirmed",
 	})
-	_ = drift.CacheSet(fmt.Sprintf("booking:%s", bookingID), string(bookingJSON), 7776000)
+	_ = drift.Cache.Set(fmt.Sprintf("booking:%s", bookingID), string(bookingJSON), 7776000)
 
 	// ── Step 5: enqueue for confirmation email ────────────────────────────────
-	_ = drift.QueuePush("booking-queue", map[string]any{
+	_ = drift.Queue("booking-queue").Push(map[string]any{
 		"booking_id": bookingID,
 		"name":       name,
 		"email":      email,

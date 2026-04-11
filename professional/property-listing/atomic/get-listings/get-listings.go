@@ -15,7 +15,7 @@ import (
 )
 
 func GetGetListings() (int, string, interface{}) {
-	raw, err := drift.CacheGet("listings")
+	raw, err := drift.Cache.Get("listings")
 	if err != nil || len(raw) == 0 {
 		return http.StatusOK, "OK", defaultListings()
 	}

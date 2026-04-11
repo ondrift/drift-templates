@@ -35,7 +35,7 @@ func PostSignup(req RequestBody) (int, string, interface{}) {
 	}
 
 	// Check for duplicate signup.
-	raw, err := drift.CacheGet("waitlist:" + email)
+	raw, err := drift.Cache.Get("waitlist:" + email)
 	if err == nil && len(raw) > 0 {
 		var existing map[string]any
 		if json.Unmarshal(raw, &existing) == nil {
@@ -47,13 +47,13 @@ func PostSignup(req RequestBody) (int, string, interface{}) {
 	}
 
 	// Increment the global counter to determine position.
-	counterRaw, _ := drift.CacheGet("waitlist:counter")
+	counterRaw, _ := drift.Cache.Get("waitlist:counter")
 	counter := 0
 	if len(counterRaw) > 0 {
 		counter, _ = strconv.Atoi(string(counterRaw))
 	}
 	counter++
-	_ = drift.CacheSet("waitlist:counter", strconv.Itoa(counter), 0)
+	_ = drift.Cache.Set("waitlist:counter", strconv.Itoa(counter), 0)
 
 	position := counter
 	referralCode := fmt.Sprintf("ref-%d", position)
@@ -67,7 +67,7 @@ func PostSignup(req RequestBody) (int, string, interface{}) {
 		"referred_by":   strings.TrimSpace(req.ReferredBy),
 		"signed_up_at":  time.Now().UTC().Format(time.RFC3339),
 	}
-	if _, err := drift.BackboneWrite("signups", doc); err != nil {
+	if _, err := drift.NoSQL.Collection("signups").Insert(doc); err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save signup",
 		}
@@ -79,7 +79,7 @@ func PostSignup(req RequestBody) (int, string, interface{}) {
 		"referral_code": referralCode,
 		"name":          name,
 	})
-	_ = drift.CacheSet("waitlist:"+email, string(positionJSON), 0)
+	_ = drift.Cache.Set("waitlist:"+email, string(positionJSON), 0)
 
 	// Log referral if provided.
 	if req.ReferredBy != "" {

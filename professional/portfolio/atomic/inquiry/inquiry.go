@@ -37,7 +37,7 @@ func PostInquiry(req RequestBody) (int, string, interface{}) {
 		"received_at": time.Now().UTC().Format(time.RFC3339),
 		"status":      "new",
 	}
-	_, err := drift.BackboneWrite("inquiries", doc)
+	_, err := drift.NoSQL.Collection("inquiries").Insert(doc)
 	if err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save inquiry",
@@ -45,7 +45,7 @@ func PostInquiry(req RequestBody) (int, string, interface{}) {
 	}
 
 	// Enqueue notification email.
-	_ = drift.QueuePush("inquiry-queue", map[string]any{
+	_ = drift.Queue("inquiry-queue").Push(map[string]any{
 		"id":      inquiryID,
 		"name":    req.Name,
 		"email":   req.Email,

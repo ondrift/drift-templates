@@ -48,7 +48,7 @@ func PostRsvpOpenHouse(req RequestBody) (int, string, interface{}) {
 		"party_size": req.PartySize,
 		"rsvp_at":    time.Now().UTC().Format(time.RFC3339),
 	}
-	_, err := drift.BackboneWrite("rsvps", doc)
+	_, err := drift.NoSQL.Collection("rsvps").Insert(doc)
 	if err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save RSVP",
@@ -56,7 +56,7 @@ func PostRsvpOpenHouse(req RequestBody) (int, string, interface{}) {
 	}
 
 	// Enqueue agent notification.
-	_ = drift.QueuePush("agent-queue", map[string]any{
+	_ = drift.Queue("agent-queue").Push(map[string]any{
 		"type":       "rsvp",
 		"rsvp_id":    rsvpID,
 		"listing_id": req.ListingID,

@@ -39,14 +39,14 @@ func PostPurchase(req RequestBody) (int, string, interface{}) {
 		"purchased_at": time.Now().UTC().Format(time.RFC3339),
 		"status":       "pending_delivery",
 	}
-	_, err := drift.BackboneWrite("purchases", doc)
+	_, err := drift.NoSQL.Collection("purchases").Insert(doc)
 	if err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save purchase",
 		}
 	}
 
-	_ = drift.QueuePush("delivery-queue", map[string]any{
+	_ = drift.Queue("delivery-queue").Push(map[string]any{
 		"purchase_id":  purchaseID,
 		"product_id":   req.ProductID,
 		"name":         req.Name,

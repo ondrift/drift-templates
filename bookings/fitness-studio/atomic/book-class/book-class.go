@@ -43,7 +43,7 @@ func PostBookClass(req RequestBody) (int, string, interface{}) {
 	}
 
 	// Load schedule to find the class and its max_capacity.
-	raw, err := drift.CacheGet("class-schedule")
+	raw, err := drift.Cache.Get("class-schedule")
 	if err != nil || len(raw) == 0 {
 		return http.StatusInternalServerError, "Schedule error", map[string]string{
 			"error": "could not load class schedule",
@@ -73,7 +73,7 @@ func PostBookClass(req RequestBody) (int, string, interface{}) {
 	// Check current count for this class + date.
 	countKey := "class:" + req.ClassID + ":" + req.Date + ":count"
 	currentCount := 0
-	countRaw, err := drift.CacheGet(countKey)
+	countRaw, err := drift.Cache.Get(countKey)
 	if err == nil && len(countRaw) > 0 {
 		currentCount, _ = strconv.Atoi(string(countRaw))
 	}
@@ -86,7 +86,7 @@ func PostBookClass(req RequestBody) (int, string, interface{}) {
 
 	// Increment spot count (48h TTL = 172800 seconds).
 	newCount := currentCount + 1
-	_ = drift.CacheSet(countKey, []byte(strconv.Itoa(newCount)), 172800)
+	_ = drift.Cache.Set(countKey, []byte(strconv.Itoa(newCount)), 172800)
 
 	// Generate booking ID.
 	nano := fmt.Sprintf("%d", time.Now().UnixNano())
@@ -103,7 +103,7 @@ func PostBookClass(req RequestBody) (int, string, interface{}) {
 	}
 
 	// Store booking in NoSQL.
-	_, err = drift.BackboneWrite("bookings", doc)
+	_, err = drift.NoSQL.Collection("bookings").Insert(doc)
 	if err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save booking",
@@ -112,10 +112,10 @@ func PostBookClass(req RequestBody) (int, string, interface{}) {
 
 	// Cache the booking for quick lookup by cancel-booking.
 	bookingJSON, _ := json.Marshal(doc)
-	_ = drift.CacheSet("booking:"+bookingID, bookingJSON, 172800)
+	_ = drift.Cache.Set("booking:"+bookingID, bookingJSON, 172800)
 
 	// Enqueue confirmation email.
-	_ = drift.QueuePush("class-queue", map[string]any{
+	_ = drift.Queue("class-queue").Push(map[string]any{
 		"booking_id": bookingID,
 		"class_id":   req.ClassID,
 		"class_name": found.Name,

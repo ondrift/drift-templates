@@ -42,7 +42,7 @@ func PostSubmitIntake(req RequestBody) (int, string, interface{}) {
 		"insurance_provider": req.InsuranceProvider,
 		"created_at":         time.Now().UTC().Format(time.RFC3339),
 	}
-	_, err := drift.BackboneWrite("patients", doc)
+	_, err := drift.NoSQL.Collection("patients").Insert(doc)
 	if err != nil {
 		return http.StatusInternalServerError, "Storage error", map[string]string{
 			"error": "failed to save patient record",
@@ -50,7 +50,7 @@ func PostSubmitIntake(req RequestBody) (int, string, interface{}) {
 	}
 
 	// Store patient ID in cache for quick lookup by email.
-	_ = drift.CacheSet("patient:"+req.Email, patientID, 0)
+	_ = drift.Cache.Set("patient:"+req.Email, patientID, 0)
 
 	return http.StatusOK, "Patient registered", map[string]any{
 		"patient_id": patientID,
