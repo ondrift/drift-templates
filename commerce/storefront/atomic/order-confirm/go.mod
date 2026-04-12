@@ -2,4 +2,4 @@ module atomic/order-confirm
 
 go 1.26.1
 
-require github.com/ondrift/drift-sdk v0.4.0
+require github.com/ondrift/drift-sdk v0.6.0
