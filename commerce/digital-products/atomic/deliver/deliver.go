@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
-	drift "github.com/ondrift/drift-sdk"
+	drift "github.com/ondrift/drift-sdk/go"
 )
 
 // RequestBody is the message popped from delivery-queue by the trigger.

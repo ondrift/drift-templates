@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	drift "github.com/ondrift/drift-sdk"
+	drift "github.com/ondrift/drift-sdk/go"
 )
 
 type OrderItem struct {

@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"os"
 
-	drift "github.com/ondrift/drift-sdk"
+	drift "github.com/ondrift/drift-sdk/go"
 )
 
 // RequestBody is the message popped from reservhoation-queue by the trigger.

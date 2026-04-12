@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
-	drift "github.com/ondrift/drift-sdk"
+	drift "github.com/ondrift/drift-sdk/go"
 )
 
 // RequestBody is the message popped from the signup-queue by the trigger.

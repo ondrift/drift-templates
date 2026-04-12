@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"strconv"
 
-	drift "github.com/ondrift/drift-sdk"
+	drift "github.com/ondrift/drift-sdk/go"
 )
 
 func GetGetResults() (int, string, interface{}) {

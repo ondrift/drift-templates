@@ -1,2 +1,2 @@
-github.com/ondrift/drift-sdk v0.6.0 h1:Xsi+AgIESCSiIz14dXxK37pTbpCifQi4eBjog+LdtVM=
-github.com/ondrift/drift-sdk v0.6.0/go.mod h1:ZP4URL3UFKvhqWvv+HzrGRgoGQkFs+PziR9dFaKMT4k=
+github.com/ondrift/drift-sdk/go v0.7.0 h1:ffPGrPNVxE7Z8njeKJmgPLLHeP39iAwJA3N7FTilxKY=
+github.com/ondrift/drift-sdk/go v0.7.0/go.mod h1:hstTNG4D90OjtRoLeQfDElfOmQia7+cH4mtC3O90kKc=

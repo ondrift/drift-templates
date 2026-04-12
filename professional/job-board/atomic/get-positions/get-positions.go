@@ -11,7 +11,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	drift "github.com/ondrift/drift-sdk"
+	drift "github.com/ondrift/drift-sdk/go"
 )
 
 func GetGetPositions() (int, string, interface{}) {
